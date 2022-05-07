@@ -24,12 +24,11 @@ def generate_salt(size=16):
 class InvalidKeyException(Exception):
     pass
 
-# TODO add functionality to re-encrypt data after some timeout time
 class crypto:
     """Cryptography class for Encrypting and Decrypting text
     """
 
-    def __init__(self, pass_phrase, data, salt=generate_salt()):
+    def __init__(self, pass_phrase, data, salt=generate_salt(), auto_lock = True):
         """initializes the crypto class
 
         Args:
@@ -40,16 +39,13 @@ class crypto:
         self.data = str(data)
         self.salt = salt
         self.pass_phrase = pass_phrase
-        self.die=False
         
+        self.die = False
         self.valid_key = True
         self.__max_counter = 20
-        self.counter = self.__max_counter
-        self.pass_watcher_thread = Thread(target=self.countdown)
-        self.pass_watcher_thread.start()
         self.refresh_counter()
 
-    def create_key(self):
+    def create_key(self) -> bytes:
         """creates key encryption
 
         Returns:
@@ -70,7 +66,7 @@ class crypto:
         return key    
 
 
-    def encrypt(self):
+    def encrypt(self) -> "crypto":
         """Encrypts the Data
         """
         # if self.encrypt_status == True:
@@ -85,7 +81,7 @@ class crypto:
         # self.encrypt_status = True
         return self
 
-    def decrypt(self):
+    def decrypt(self) -> "crypto":
         """Decrypts the data
         """
         # if self.encrypt_status == False:
@@ -108,8 +104,9 @@ class crypto:
         # self.encrypt_status = False
         return self
 
-    def countdown(self):
-        """Will run in separate thread and will after some time, reset the pass_phrase and encrypt the data
+    def countdown(self) -> None:
+        """
+        Will run in separate thread and after some time, reset the pass_phrase and encrypt back the data
         """
         while self.counter > 0:
             time.sleep(1)
@@ -121,8 +118,9 @@ class crypto:
         self.valid_key=False
         self.pass_phrase = ""
             
-    def update_pass_phrase(self, pass_phrase):
-        """Will run after we have run down our countdown and we wish to again use the data, need to re enter password for encryption or decryption
+    def update_pass_phrase(self, pass_phrase) -> None:
+        """
+        Will run after we have run down our countdown and we wish to again use the data, need to re enter password for encryption or decryption
 
         Args:
             pass_phrase (str): the password for encryption or decryption of the data
@@ -131,21 +129,26 @@ class crypto:
         self.valid_key = True
         self.refresh_counter()
 
-    def refresh_counter(self):
+    def refresh_counter(self) -> None:
+        """
+            Refreshes the reset counter to start, should be used to when the user is interacting so that password doesn't reset while using it. Everytime user interacts, we can 
+        """
         self.counter = self.__max_counter
-        if self.pass_watcher_thread.is_alive():
+        
+        if not self.auto_lock:
+            # If we don't want auto_lock mechanism, we can skip the rest steps 
             return
-        self.pass_watcher_thread = Thread(target=self.countdown)
+        if hasattr(self, 'pass_watcher_thread') : 
+            if self.pass_watcher_thread.is_alive():
+                return
+        self.pass_watcher_thread = Thread(target=self.countdown, daemon=True)
         self.pass_watcher_thread.start()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return json.dumps(self.to_dict())
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         return {
             'salt':self.salt,
             'data':self.data
         }
-
-    def clean(self):
-        self.die=True

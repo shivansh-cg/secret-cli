@@ -72,6 +72,5 @@ if __name__ == "__main__":
     with open("user_cred.json", "r") as file:
         creds = json.loads(file.read())
         
-        
     text = prompt('Enter : ', completer=CustomCompleter(creds))
-    print('You said: %s' % text)
+    print( (text).split(' '))

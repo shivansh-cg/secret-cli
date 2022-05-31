@@ -4,7 +4,7 @@ from prompt_toolkit.document import Document
 from prompt_toolkit.completion import WordCompleter, FuzzyCompleter, NestedCompleter
 from prompt_toolkit import prompt
 import json
-
+from copy import deepcopy
 import re
 
 global_end = None
@@ -17,18 +17,20 @@ class CustomCompleter(Completer):
     completion_callback = None
 
     def __init__(
-        self, cred_list, commands = {}, ignore_case = True, last_inputs = set()
+        self, cred_list, main_commands = {}, record_commands = [], property_commonds=[], ignore_case = True, last_inputs = set()
     ) -> None:
 
         self.ignore_case = ignore_case
         self.cred_list = cred_list
         self.last_inputs:set = last_inputs
         self.single_option = None
+        self.main_commands = main_commands
         self.narrow_options()
 
     def narrow_options(self):
         global global_end
-        self.my_word_dict = {}
+        self.my_word_dict = deepcopy(self.main_commands)
+        # self.my_word_dict ={}
         
         if len(self.cred_list) == 1:
             self.single_option = self.cred_list[0]
@@ -38,8 +40,9 @@ class CustomCompleter(Completer):
         for c in self.cred_list:
             for k in c['info']:
                 the_key = k+":"+c['info'][k]
-                if the_key in self.last_inputs:
-                    continue
+                # ! Causing problems when doing nested search and fails fataly
+                # if the_key in self.last_inputs:
+                #     continue
                 if the_key in self.my_word_dict:
                     self.my_word_dict[the_key].append(c)
                 else:
@@ -58,7 +61,10 @@ class CustomCompleter(Completer):
         # subcompleter.
         if " " in text:
             first_term = text.split()[0]
-            next_word_dict = self.my_word_dict[first_term]
+            if first_term == "burton.com":
+                asd = "asdf"
+            next_word_dict = (self.my_word_dict[first_term])
+            # next_word_dict = deepcopy(self.my_word_dict[first_term])
             if len(next_word_dict) == 1:
                 nextSecrets = next_word_dict[0]['secrets'].keys()
                 commands = {
@@ -67,9 +73,14 @@ class CustomCompleter(Completer):
                     "view": None
                 }
                 nestedDict = dict(zip(nextSecrets, [commands for i in range(len(nextSecrets))]))
-                
+                nestedDict["copy"]=None
+                nestedDict["edit"]=None
+                nestedDict["view"]=None
                 completer = NestedCompleter.from_nested_dict(nestedDict)
                 # yield from completer.get_completions(document, complete_event)
+            elif first_term in self.main_commands:
+                completer = NestedCompleter.from_nested_dict(self.main_commands[first_term])
+                
             else:
                 self.last_inputs.add(first_term)
                 completer = CustomCompleter(cred_list=self.my_word_dict[first_term], last_inputs=self.last_inputs)

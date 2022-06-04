@@ -36,6 +36,7 @@ class crypto:
             data (str): the data we want to decrypt or encrypt
             salt (str, optional): string representation of a salt we want to use for creating key. Defaults to generate_salt().
         """
+        self.auto_lock = auto_lock
         self.data = str(data)
         self.salt = salt
         self.pass_phrase = pass_phrase

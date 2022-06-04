@@ -13,6 +13,7 @@ from prompt_toolkit.completion import PathCompleter
  
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from prompt_toolkit.formatted_text import HTML
 from cryptography.fernet import Fernet, InvalidToken
 
 def toggle_input(prompt_text=">", initially_hidden=True):
@@ -35,7 +36,7 @@ def toggle_input(prompt_text=">", initially_hidden=True):
         hidden[0] = not hidden[0]
 
     input_text = prompt(
-        prompt_text, rprompt="Ctrl-T to toggle visibility", is_password=Condition(lambda: hidden[0]), key_bindings=bindings
+        prompt_text,placeholder=HTML('<style color="#888888">(Ctrl-T to toggle visibility)</style>'), rprompt="Ctrl-T to toggle visibility", is_password=Condition(lambda: hidden[0]), key_bindings=bindings
     )
     return input_text
 
@@ -57,6 +58,7 @@ def get_path_prompt(prompt_text, **kwargs):
     )
 
     return prompt(
+                
                 prompt_text,
                 completer=PathCompleter(only_directories=True), 
                 rprompt="Press Tab to get suggestions",

@@ -1,13 +1,13 @@
 
 from prompt_toolkit.completion import Completer
 from prompt_toolkit.document import Document
-from prompt_toolkit.completion import WordCompleter, FuzzyCompleter, NestedCompleter
+from prompt_toolkit.completion import WordCompleter, FuzzyCompleter#, NestedCompleter
+from nested_completer import NestedCompleter
 from prompt_toolkit import prompt
 import json
 from copy import deepcopy
 import re
 
-global_end = None
 class CustomCompleter(Completer):
     """
         Custom completer for filling the completion
@@ -17,7 +17,7 @@ class CustomCompleter(Completer):
     completion_callback = None
 
     def __init__(
-        self, cred_list, main_commands = {}, record_commands = [], property_commonds=[], ignore_case = True, last_inputs = set()
+        self, cred_list, main_commands = {}, meta_dict = {}, record_commands = [], property_commonds=[], ignore_case = True, last_inputs = set()
     ) -> None:
 
         self.ignore_case = ignore_case
@@ -25,12 +25,27 @@ class CustomCompleter(Completer):
         self.last_inputs:set = last_inputs
         self.single_option = None
         self.main_commands = main_commands
+        self.meta_dict = meta_dict
         self.narrow_options()
+        self.current_text = ""
+        
+    def help_text(self):
+        if self.current_text in self.meta_dict:
+            return self.meta_dict.get(self.current_text)
+        
+        if self.current_text == "":
+            return ""
+        
+        if self.current_text.split()[-1] in self.meta_dict:
+            return self.meta_dict.get(self.current_text.split()[-1])
+        
+        return ""
+        return self.meta_dict.get(self.current_text, "")
+        return self.current_text
 
     def narrow_options(self):
-        global global_end
         self.my_word_dict = deepcopy(self.main_commands)
-        # self.my_word_dict ={}
+        #self.my_word_dict ={}
         
         if len(self.cred_list) == 1:
             self.single_option = self.cred_list[0]
@@ -47,7 +62,6 @@ class CustomCompleter(Completer):
                     self.my_word_dict[the_key].append(c)
                 else:
                     self.my_word_dict[the_key] = [c]
-        global_end = self.my_word_dict
 
                 
     def get_completions(
@@ -56,13 +70,11 @@ class CustomCompleter(Completer):
         # Split document.
         text = document.text_before_cursor.lstrip()
         stripped_len = len(document.text_before_cursor) - len(text)
-
+        self.current_text = text.rstrip()
         # If there is a space, check for the first term, and use a
         # subcompleter.
         if " " in text:
             first_term = text.split()[0]
-            if first_term == "burton.com":
-                asd = "asdf"
             next_word_dict = (self.my_word_dict[first_term])
             # next_word_dict = deepcopy(self.my_word_dict[first_term])
             if len(next_word_dict) == 1:
@@ -73,17 +85,18 @@ class CustomCompleter(Completer):
                     "view": None
                 }
                 nestedDict = dict(zip(nextSecrets, [commands for i in range(len(nextSecrets))]))
-                nestedDict["copy"]=None
+                # ? whole record needed copying?
+                #nestedDict["copy"]=None
                 nestedDict["edit"]=None
                 nestedDict["view"]=None
-                completer = NestedCompleter.from_nested_dict(nestedDict)
+                completer = NestedCompleter.from_nested_dict(nestedDict, self.meta_dict)
                 # yield from completer.get_completions(document, complete_event)
             elif first_term in self.main_commands:
-                completer = NestedCompleter.from_nested_dict(self.main_commands[first_term])
+                completer = NestedCompleter.from_nested_dict(self.main_commands[first_term], self.meta_dict)
                 
             else:
                 self.last_inputs.add(first_term)
-                completer = CustomCompleter(cred_list=self.my_word_dict[first_term], last_inputs=self.last_inputs)
+                completer = CustomCompleter(cred_list=self.my_word_dict[first_term],  last_inputs=self.last_inputs, meta_dict=self.meta_dict)
 
             # If we have a sub completer, use this for the completions.
             if completer is not None:
@@ -99,7 +112,7 @@ class CustomCompleter(Completer):
 
         # No space in the input: behave exactly like `WordCompleter`.
         else:
-            completer = FuzzyCompleter(completer=WordCompleter(self.my_word_dict.keys()),enable_fuzzy=True, pattern=r"^([a-zA-Z0-9_:]+|[^a-zA-Z0-9_\s]+)")
+            completer = FuzzyCompleter(completer=WordCompleter(self.my_word_dict.keys(), meta_dict=self.meta_dict),enable_fuzzy=True, pattern=r"^([a-zA-Z0-9_:]+|[^a-zA-Z0-9_\s]+)")
             
             yield from completer.get_completions(document, complete_event)
 
@@ -111,5 +124,4 @@ if __name__ == "__main__":
         creds = json.loads(file.read())
         
     text = prompt('Enter : ', completer=CustomCompleter(creds))
-    print(global_end)
     print( (text).split(' '))

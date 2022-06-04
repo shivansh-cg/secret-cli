@@ -58,7 +58,7 @@ class secret_manager:
         pass
 
 if __name__ == "__main__":
-    if False:
+    if True:
         creds = []
 
         with open("user_cred.json", "r") as file:

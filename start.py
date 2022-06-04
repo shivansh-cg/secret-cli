@@ -6,6 +6,10 @@ from prompt_toolkit.shortcuts import input_dialog
 from BaseCLI import BaseCLI
 from utils import cred_string, toggle_input
 
+from record import RecordApp
+from utils import toggle_input
+
+
 from prompt_toolkit import prompt
 from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.shortcuts import clear
@@ -104,18 +108,23 @@ class App:
                 search_results.append((cred_string(self.creds[i]), ",".join([k for k in (self.creds[i]['info'])])))
                 
         # Check count and if there exists a sub command
-        
+        if len(search_results) == 0:
+            print("No Results Found!")
+            return
         app = ListingApp(search_results)
         chosen = app.run()
         chosen_id = json.loads(chosen[0])['id']
+        return chosen_id
         print(chosen_id)
     
     def process_input(self, processed_input):
         # print("=============")
         # print(json.dumps(processed_input, indent=4))
         if processed_input['type'] == "search":
-            self.search_result(processed_input)
-        
+            chosen_id = self.search_result(processed_input)
+            # print(self.creds[chosen_id])
+            app = RecordApp(self.creds[chosen_id])
+            app.run()
         # res = (text_input.split())
         
         # for i,search in enumerate(self.search_list):

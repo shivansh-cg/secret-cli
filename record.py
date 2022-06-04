@@ -74,22 +74,30 @@ class RecordApp:
             "info": {key: None for key in self.record['info']},
             "secret": {key: None for key in self.record['secret']},
         }
-        completor = {command: comm_completor for command in ['add', 'edit', 'copy']}
         
+        completor = {command: comm_completor for command in [ 'edit', 'copy']}
+        completor['add'] = None
         self.comand_completer = NestedCompleter.from_nested_dict(completor, meta_dict)
-        
+    
+    def command_entered(self, text):
+        # self.right_buffer.text+=text.text
+        self.left_window.title = text.text
+        self.log_buffer.text = f'{text.text}\n{self.log_buffer.text}'
+        # self.log_buffer.text += text.text
+        # self.log_buffer.text +='\n'
     def layout(self):   
         self.init_completer()
         
         self.right_buffer = Buffer()
-        
+        self.log_buffer = Buffer()
         self.command_window = TextArea(
             prompt=">>> ",
             style="class:input-field",
-            # multiline=False,
+            multiline=False,
             wrap_lines=True,
             complete_while_typing=True,
-            completer=self.comand_completer
+            completer=self.comand_completer,
+            accept_handler=self.command_entered
         )
 
 
@@ -99,40 +107,35 @@ class RecordApp:
             ('input-field', '#44ff44 '),
         ])
 
-        self.left_window = Frame(title="Record Commands", body=self.command_window, width=40)
+        self.left_window = Frame(title="Your Input", body=self.command_window, width=60)
         self.right_window = Window(BufferControl(buffer=self.right_buffer))
-
+        self.log_window = Frame(title="Logs Window", body=Window(BufferControl(buffer=self.log_buffer)))
+        self.left = HSplit([
+            self.left_window,
+            self.log_window
+            
+        ])
 
         self.body = FloatContainer(
            
-                    
-                    VSplit(
+                VSplit(
                     [
-                        self.left_window,
+                        
+                        self.left,
                         Window(width=1, char="|", style="class:line"),
                         self.right_window,
                     ]
-                    ),
-                
-                    floats=[
-                        Float(
-                            xcursor=True,
-                            ycursor=True,
-                            content=CompletionsMenu(max_height=16, scroll_offset=1),
-                        )
-                    ],
-                )
-        # self.body = VSplit(
-        #     [
-        #         self.left_window,
-        #         # A vertical line in the middle. We explicitly specify the width, to make
-        #         # sure that the layout engine will not try to divide the whole width by
-        #         # three for all these windows.
-        #         Window(width=1, char="|", style="class:line"),
-        #         # Display the Result buffer on the right.
-        #         self.right_window,
-        #     ]
-        # )
+                ),
+                floats=[
+                    Float(
+                        xcursor=True,
+                        ycursor=True,
+                        content=CompletionsMenu(max_height=16, scroll_offset=1),
+                    )
+                ],
+            )
+        
+  
 
 
         def get_titlebar_text():
@@ -159,7 +162,9 @@ class RecordApp:
     
     def __init__(self, record) -> None:
         self.record = record
+        self.title = "Hello Hi Question??/"
         self.layout()
+        self.right_buffer.text = json.dumps(record, indent=4)
         self.app = Application(
             layout=Layout(self.root_container, focused_element=self.left_window),
             key_bindings=self.kb,
@@ -177,6 +182,16 @@ class RecordApp:
 
         """
         return self.app.run()
+    
+    def input_title(self, text):
+        text = text.split()
+        meta_dict = {
+            "copy": "Copied"
+        }
+    
+    def process_input(self, text):
+        
+        pass
     
 
 if __name__ =="__main__":

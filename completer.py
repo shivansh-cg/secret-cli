@@ -78,7 +78,7 @@ class CustomCompleter(Completer):
             next_word_dict = (self.my_word_dict[first_term])
             # next_word_dict = deepcopy(self.my_word_dict[first_term])
             if len(next_word_dict) == 1:
-                nextSecrets = next_word_dict[0]['secrets'].keys()
+                nextSecrets = next_word_dict[0]['secret'].keys()
                 commands = {
                     "copy": None,
                     "edit": None,

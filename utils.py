@@ -65,3 +65,13 @@ def get_path_prompt(prompt_text, **kwargs):
                 validator=validator,
                 validate_while_typing=True, **kwargs)
 
+def cred_string(cred):
+    # print(cred)
+    cred_ret = {
+        'info':{},
+        'secret': cred['secret'],
+        'id': cred['id']
+    }
+    for key in cred['info']:
+        cred_ret["info"][cred['info'][key]] = key
+    return json.dumps(cred_ret, indent=4)

@@ -4,7 +4,7 @@ from prompt_toolkit import PromptSession, prompt
 from prompt_toolkit.shortcuts import input_dialog
 
 from BaseCLI import BaseCLI
-from utils import toggle_input
+from utils import cred_string, toggle_input
 
 from prompt_toolkit import prompt
 from prompt_toolkit.history import InMemoryHistory
@@ -50,7 +50,9 @@ class App:
         # ).run()
         chances = 3
         while True:
-            self.master_password = toggle_input("Please Enter Master Password: ")        
+            # ! Remove later
+            # self.master_password = toggle_input("Please Enter Master Password: ")   
+            self.master_password = "MyPass"     
             try:
                 c = crypto(self.master_password, **json.loads(self.creds))
                 self.creds = json.loads(c.decrypt().to_dict()['data'])
@@ -99,7 +101,7 @@ class App:
                 if r not in search:
                     match_found = False
             if match_found:
-                search_results.append((json.dumps(self.creds[i], indent=4), f'{i}'))
+                search_results.append((cred_string(self.creds[i]), ",".join([k for k in (self.creds[i]['info'])])))
                 
         # Check count and if there exists a sub command
         

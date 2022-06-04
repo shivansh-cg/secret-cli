@@ -72,7 +72,8 @@ class ListingApp:
             ('radio-selected', '#4444ff underline bold '),
         ])
 
-        self.left_window = Frame(title="Search Results", body=self.radios, width=40)
+        self.left_window = Frame(title="Search Results", body=self.radios, width=50)
+        # self.left_window = Frame(title="Search Results", body=self.radios, width=40)
         self.right_window = Window(BufferControl(buffer=self.right_buffer))
 
 

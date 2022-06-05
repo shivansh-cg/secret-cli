@@ -20,7 +20,7 @@ from googleapiclient.http import MediaIoBaseDownload
 import drive_backend
 from pymongo import MongoClient
 
-from utils import add_device_code, mfa_exists, upsert_mongo, getUserInfo, verify_device_code
+from utils import add_device_code, mfa_exists, upsert_mongo, getUserInfo, verify_device_code, generate_mfa, verify_mfa
 
 # This variable specifies the name of a file that contains the OAuth 2.0
 # information for this application, including its client_id and client_secret.
@@ -113,6 +113,8 @@ def test_api_request():
 @app.route('/upload', methods=['POST'])
 def config_upload():
     data = json.loads(request.get_data())
+    if not verify_mfa(profiles, data['_id'], data['code']):
+        return {"msg": "MFA Failed"}
     credentials = get_credentials(data)
 
     drive = googleapiclient.discovery.build(
@@ -190,15 +192,30 @@ def authorize():
     return flask.redirect(authorization_url)
 
 @app.route('/MFA_register', methods=['GET'])
-def testPost():
-    from utils import generate_mfa
+def mfa_register():
+    if 'credentials' not in flask.session:
+        return flask.redirect('authorize')
     credentials = flask.session['credentials']
-    print(request.args.get('force') )
+    
     if not mfa_exists(profiles, credentials['_id']) or request.args.get('force') == "true":
         qr_code, secret = generate_mfa()
         profiles.update_one({"_id": credentials['_id']}, {'$set': {'mfa_secret': secret}})
         return render_template('mfa_register.html', qr_code=Markup(qr_code), force=True)
     return render_template('mfa_exists.html')
+    
+@app.route('/MFA_verify', methods=['GET'])
+def mfa_verify():
+    if 'credentials' in flask.session:
+        credentials = flask.session['credentials']
+    else:
+        credentials = json.loads(request.get_data())
+        if '_id' not in credentials:
+            return {"msg": "Invalid Request"}
+    if not mfa_exists(profiles, credentials['_id']):
+        return flask.redirect(flask.url_for('MFA_register', _external=True))    
+    the_code = (credentials['code'])
+    
+    return {"verification": verify_mfa(profiles, credentials['_id'], the_code)}
     
 
 @app.route('/oauth2callback')

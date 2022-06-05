@@ -12,6 +12,12 @@ def generate_mfa(secret = pyotp.random_base32()):
     img = qrcode.make(link, image_factory=factory)
     return img.to_string().decode(), secret
 
+def verify_mfa(collection, _id,code):
+    secret = collection.find_one({'_id':_id})['mfa_secret']
+    totp = pyotp.TOTP(secret)
+    print(totp.now())
+    return totp.verify(code)
+
 def getUserInfo(credentials):
     oauth2_client = googleapiclient.discovery.build('oauth2','v2',credentials=credentials)
     user_info = oauth2_client.userinfo().get().execute()

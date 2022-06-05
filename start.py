@@ -73,11 +73,17 @@ class App:
     def __init__(self) -> None:
         # Read the credential file
         self.creds = []
-
-        with open("encrypted_data.json", "r") as file:
-            self.creds = (file.read())
-        # Authenticate and decrypt
-        self.authenticate()
+        try:
+            with open("encrypted_data.json", "r") as file:
+                self.creds = (file.read())
+            # Authenticate and decrypt
+            self.authenticate()
+        except:
+            with open("user_cred.json", "r") as file:
+                self.creds = (json.loads(file.read()))
+                for i,cred in enumerate(self.creds):
+                    cred['id'] = i
+        
         
         # Preprocessing for searching
         self.search_preprocessing()

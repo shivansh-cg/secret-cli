@@ -5,7 +5,7 @@
       "christophermiller@dean-bishop.net": "email",
       "evanstimothy": "username"
     },
-    "secrets": { "password": "_B)8yXid1#" }
+    "secret": { "password": "_B)8yXid1#" }
   },
   {
     "info": {
@@ -13,7 +13,7 @@
       "steve43@bradley-logan.info": "email",
       "bairdnicholas": "username"
     },
-    "secrets": { "password": "*9c)DzGcOV" }
+    "secret": { "password": "*9c)DzGcOV" }
   },
   {
     "info": {
@@ -21,7 +21,7 @@
       "athompson@anderson.com": "email",
       "gdavis": "username"
     },
-    "secrets": { "password": "(#1B^r*#EO" }
+    "secret": { "password": "(#1B^r*#EO" }
   },
   {
     "info": {
@@ -29,7 +29,7 @@
       "meyermatthew@gonzalez.com": "email",
       "omills": "username"
     },
-    "secrets": { "password": "plvD7dH4$5" }
+    "secret": { "password": "plvD7dH4$5" }
   },
   {
     "info": {
@@ -37,7 +37,7 @@
       "malloryrivera@lopez-cox.net": "email",
       "vhunt": "username"
     },
-    "secrets": { "password": "(4JDtqCl5A" }
+    "secret": { "password": "(4JDtqCl5A" }
   },
   {
     "info": {
@@ -45,7 +45,7 @@
       "balljeffrey@cameron.com": "email",
       "nclark": "username"
     },
-    "secrets": { "password": "x5j)Gt6j)Z" }
+    "secret": { "password": "x5j)Gt6j)Z" }
   },
   {
     "info": {
@@ -53,7 +53,7 @@
       "uadams@maxwell.com": "email",
       "griffinjames": "username"
     },
-    "secrets": { "password": "5VJ0)I&l@7" }
+    "secret": { "password": "5VJ0)I&l@7" }
   },
   {
     "info": {
@@ -61,7 +61,7 @@
       "nrice@nguyen.com": "email",
       "codyhart": "username"
     },
-    "secrets": { "password": "b4TRfviB_2" }
+    "secret": { "password": "b4TRfviB_2" }
   },
   {
     "info": {
@@ -69,7 +69,7 @@
       "victoria72@griffin.com": "email",
       "brianbryant": "username"
     },
-    "secrets": { "password": "N^*(8HFrIb" }
+    "secret": { "password": "N^*(8HFrIb" }
   },
   {
     "info": {
@@ -77,7 +77,7 @@
       "yclark@saunders-frost.biz": "email",
       "sullivanwilliam": "username"
     },
-    "secrets": { "password": "peFOW^dj$4" }
+    "secret": { "password": "peFOW^dj$4" }
   },
   {
     "info": {
@@ -85,7 +85,7 @@
       "rcohen@salazar.com": "email",
       "ugreen": "username"
     },
-    "secrets": { "password": "6JWRS62z+8" }
+    "secret": { "password": "6JWRS62z+8" }
   },
   {
     "info": {
@@ -93,7 +93,7 @@
       "nicholas94@hobbs.net": "email",
       "josephpeterson": "username"
     },
-    "secrets": { "password": "%11T^KT&w6" }
+    "secret": { "password": "%11T^KT&w6" }
   },
   {
     "info": {
@@ -101,7 +101,7 @@
       "jillsandoval@wilson-cardenas.org": "email",
       "laura68": "username"
     },
-    "secrets": { "password": "3QqbMUpO$4" }
+    "secret": { "password": "3QqbMUpO$4" }
   },
   {
     "info": {
@@ -109,7 +109,7 @@
       "wmay@williams-smith.biz": "email",
       "ujohnson": "username"
     },
-    "secrets": { "password": "24Fc@Jt4#g" }
+    "secret": { "password": "24Fc@Jt4#g" }
   },
   {
     "info": {
@@ -117,7 +117,7 @@
       "qbrown@pace-douglas.org": "email",
       "sward": "username"
     },
-    "secrets": { "password": "Vj9VBjHr&#" }
+    "secret": { "password": "Vj9VBjHr&#" }
   },
   {
     "info": {
@@ -125,7 +125,7 @@
       "suarezandrew@martinez.com": "email",
       "floyddavid": "username"
     },
-    "secrets": { "password": "8Q#1LLQlU$" }
+    "secret": { "password": "8Q#1LLQlU$" }
   },
   {
     "info": {
@@ -133,7 +133,7 @@
       "uvang@ellis.com": "email",
       "acoleman": "username"
     },
-    "secrets": { "password": "%5XHFS(hQF" }
+    "secret": { "password": "%5XHFS(hQF" }
   },
   {
     "info": {
@@ -141,7 +141,7 @@
       "kyledavis@fischer-holden.com": "email",
       "nperry": "username"
     },
-    "secrets": { "password": "(uj8HRwM^5" }
+    "secret": { "password": "(uj8HRwM^5" }
   },
   {
     "info": {
@@ -149,7 +149,7 @@
       "amandamiller@thompson-moody.org": "email",
       "joneslindsay": "username"
     },
-    "secrets": { "password": "Li4ZWuy#u^" }
+    "secret": { "password": "Li4ZWuy#u^" }
   },
   {
     "info": {
@@ -157,7 +157,7 @@
       "jenniferwilson@johnston.com": "email",
       "scottjennifer": "username"
     },
-    "secrets": { "password": "4A(45Rt(ED" }
+    "secret": { "password": "4A(45Rt(ED" }
   },
   {
     "info": {
@@ -165,7 +165,7 @@
       "townsendgail@baker.org": "email",
       "bmccoy": "username"
     },
-    "secrets": { "password": "0U*M9%)wn)" }
+    "secret": { "password": "0U*M9%)wn)" }
   },
   {
     "info": {
@@ -173,7 +173,7 @@
       "princelinda@hall.biz": "email",
       "oconnorjames": "username"
     },
-    "secrets": { "password": "fjDczv+3#8" }
+    "secret": { "password": "fjDczv+3#8" }
   },
   {
     "info": {
@@ -181,7 +181,7 @@
       "voconnell@bowman.com": "email",
       "tanya49": "username"
     },
-    "secrets": { "password": "43NvITgC(d" }
+    "secret": { "password": "43NvITgC(d" }
   },
   {
     "info": {
@@ -189,7 +189,7 @@
       "gbell@garcia-orr.com": "email",
       "littleshawn": "username"
     },
-    "secrets": { "password": "M+5ONmypM$" }
+    "secret": { "password": "M+5ONmypM$" }
   },
   {
     "info": {
@@ -197,7 +197,7 @@
       "leachjessica@johnson.com": "email",
       "garyroberts": "username"
     },
-    "secrets": { "password": "SurPHXwn@7" }
+    "secret": { "password": "SurPHXwn@7" }
   },
   {
     "info": {
@@ -205,7 +205,7 @@
       "catherinejones@rojas.info": "email",
       "gtownsend": "username"
     },
-    "secrets": { "password": "2$tw8Pyk#%" }
+    "secret": { "password": "2$tw8Pyk#%" }
   },
   {
     "info": {
@@ -213,7 +213,7 @@
       "pricekelly@rogers-scott.org": "email",
       "johnsontammy": "username"
     },
-    "secrets": { "password": "2))H*WYd_2" }
+    "secret": { "password": "2))H*WYd_2" }
   },
   {
     "info": {
@@ -221,7 +221,7 @@
       "courtney26@long-jones.com": "email",
       "alexander16": "username"
     },
-    "secrets": { "password": "$8pPLQ)b8Z" }
+    "secret": { "password": "$8pPLQ)b8Z" }
   },
   {
     "info": {
@@ -229,7 +229,7 @@
       "jonathon88@sanchez.com": "email",
       "danachase": "username"
     },
-    "secrets": { "password": "_5#e0Lt6Qs" }
+    "secret": { "password": "_5#e0Lt6Qs" }
   },
   {
     "info": {
@@ -237,7 +237,7 @@
       "joseph85@chavez-mccarthy.info": "email",
       "austinnicolas": "username"
     },
-    "secrets": { "password": "(1#6O5re_2" }
+    "secret": { "password": "(1#6O5re_2" }
   },
   {
     "info": {
@@ -245,7 +245,7 @@
       "scott38@sullivan.net": "email",
       "llopez": "username"
     },
-    "secrets": { "password": "K0r1JQAz$l" }
+    "secret": { "password": "K0r1JQAz$l" }
   },
   {
     "info": {
@@ -253,7 +253,7 @@
       "kkim@barker.net": "email",
       "michaelnewman": "username"
     },
-    "secrets": { "password": "7WI5KCWe&@" }
+    "secret": { "password": "7WI5KCWe&@" }
   },
   {
     "info": {
@@ -261,7 +261,7 @@
       "debbiesawyer@bishop.com": "email",
       "rbaker": "username"
     },
-    "secrets": { "password": "0+E4Bs@rzP" }
+    "secret": { "password": "0+E4Bs@rzP" }
   },
   {
     "info": {
@@ -269,7 +269,7 @@
       "melissayoung@jones.com": "email",
       "janet82": "username"
     },
-    "secrets": { "password": "%IQ!9Po6)7" }
+    "secret": { "password": "%IQ!9Po6)7" }
   },
   {
     "info": {
@@ -277,7 +277,7 @@
       "williammurray@gallagher.com": "email",
       "grobinson": "username"
     },
-    "secrets": { "password": "q^)l8AkdrJ" }
+    "secret": { "password": "q^)l8AkdrJ" }
   },
   {
     "info": {
@@ -285,7 +285,7 @@
       "stewartwilliam@lucero.com": "email",
       "laurenmckee": "username"
     },
-    "secrets": { "password": "B!Xa&nhP!4" }
+    "secret": { "password": "B!Xa&nhP!4" }
   },
   {
     "info": {
@@ -293,7 +293,7 @@
       "sotoerika@robinson.com": "email",
       "alexjensen": "username"
     },
-    "secrets": { "password": "Te3DpS58^8" }
+    "secret": { "password": "Te3DpS58^8" }
   },
   {
     "info": {
@@ -301,7 +301,7 @@
       "ddouglas@gibson.com": "email",
       "thomassarah": "username"
     },
-    "secrets": { "password": "+Amb8Puzp3" }
+    "secret": { "password": "+Amb8Puzp3" }
   },
   {
     "info": {
@@ -309,7 +309,7 @@
       "sharon74@hays.biz": "email",
       "icarter": "username"
     },
-    "secrets": { "password": "YHe0Kbon*$" }
+    "secret": { "password": "YHe0Kbon*$" }
   },
   {
     "info": {
@@ -317,7 +317,7 @@
       "fcole@brown.net": "email",
       "sheakyle": "username"
     },
-    "secrets": { "password": "N7KVfGPe$v" }
+    "secret": { "password": "N7KVfGPe$v" }
   },
   {
     "info": {
@@ -325,7 +325,7 @@
       "hgonzalez@ward.biz": "email",
       "padillaraymond": "username"
     },
-    "secrets": { "password": "%Am^8!Da%@" }
+    "secret": { "password": "%Am^8!Da%@" }
   },
   {
     "info": {
@@ -333,7 +333,7 @@
       "tonigraham@dunn-wright.biz": "email",
       "thomaslee": "username"
     },
-    "secrets": { "password": "a&0YcQFgN_" }
+    "secret": { "password": "a&0YcQFgN_" }
   },
   {
     "info": {
@@ -341,7 +341,7 @@
       "whitelisa@phillips.com": "email",
       "taylorchristy": "username"
     },
-    "secrets": { "password": "ljGto5Cgr*" }
+    "secret": { "password": "ljGto5Cgr*" }
   },
   {
     "info": {
@@ -349,7 +349,7 @@
       "melvin00@schmidt.info": "email",
       "jonathansutton": "username"
     },
-    "secrets": { "password": "qM528Z!l)W" }
+    "secret": { "password": "qM528Z!l)W" }
   },
   {
     "info": {
@@ -357,7 +357,7 @@
       "julian88@velez.org": "email",
       "calebhurley": "username"
     },
-    "secrets": { "password": "u&N*CFh_(8" }
+    "secret": { "password": "u&N*CFh_(8" }
   },
   {
     "info": {
@@ -365,7 +365,7 @@
       "rebeccawilson@brown-huang.com": "email",
       "martinezmary": "username"
     },
-    "secrets": { "password": "tK0L!9Bj!n" }
+    "secret": { "password": "tK0L!9Bj!n" }
   },
   {
     "info": {
@@ -373,7 +373,7 @@
       "gonzalezkevin@harrington-baxter.biz": "email",
       "samuelthomas": "username"
     },
-    "secrets": { "password": "5dIIq^ca&j" }
+    "secret": { "password": "5dIIq^ca&j" }
   },
   {
     "info": {
@@ -381,7 +381,7 @@
       "caleb35@green.com": "email",
       "thomasheidi": "username"
     },
-    "secrets": { "password": "%zNCLdz^b0" }
+    "secret": { "password": "%zNCLdz^b0" }
   },
   {
     "info": {
@@ -389,7 +389,7 @@
       "kathy80@tran.net": "email",
       "hernandezpatrick": "username"
     },
-    "secrets": { "password": "i)bnV1ic$6" }
+    "secret": { "password": "i)bnV1ic$6" }
   },
   {
     "info": {
@@ -397,7 +397,7 @@
       "bbrooks@moore.org": "email",
       "moorejohn": "username"
     },
-    "secrets": { "password": "#u21DSs)#j" }
+    "secret": { "password": "#u21DSs)#j" }
   },
   {
     "info": {
@@ -405,7 +405,7 @@
       "mmoon@hopkins.com": "email",
       "davisjohn": "username"
     },
-    "secrets": { "password": "^1BWhuXo18" }
+    "secret": { "password": "^1BWhuXo18" }
   },
   {
     "info": {
@@ -413,7 +413,7 @@
       "veronicamahoney@williams-silva.com": "email",
       "ymeadows": "username"
     },
-    "secrets": { "password": "!LiL%M8o)8" }
+    "secret": { "password": "!LiL%M8o)8" }
   },
   {
     "info": {
@@ -421,7 +421,7 @@
       "samanthamarks@adams-rogers.com": "email",
       "zdickson": "username"
     },
-    "secrets": { "password": "mvV)8dOt4R" }
+    "secret": { "password": "mvV)8dOt4R" }
   },
   {
     "info": {
@@ -429,7 +429,7 @@
       "steven11@campbell.info": "email",
       "barbara92": "username"
     },
-    "secrets": { "password": "^Q0@8RqqnF" }
+    "secret": { "password": "^Q0@8RqqnF" }
   },
   {
     "info": {
@@ -437,7 +437,7 @@
       "dlewis@richardson.com": "email",
       "careyjason": "username"
     },
-    "secrets": { "password": "^xx1y%Jd(&" }
+    "secret": { "password": "^xx1y%Jd(&" }
   },
   {
     "info": {
@@ -445,7 +445,7 @@
       "william43@bender.com": "email",
       "meyerkayla": "username"
     },
-    "secrets": { "password": "#!IchV)d8N" }
+    "secret": { "password": "#!IchV)d8N" }
   },
   {
     "info": {
@@ -453,7 +453,7 @@
       "rhoward@dunn-harris.net": "email",
       "foxjohn": "username"
     },
-    "secrets": { "password": "@)12Z50e7P" }
+    "secret": { "password": "@)12Z50e7P" }
   },
   {
     "info": {
@@ -461,7 +461,7 @@
       "lmaxwell@cruz.com": "email",
       "cody36": "username"
     },
-    "secrets": { "password": "oz6WIt$o1!" }
+    "secret": { "password": "oz6WIt$o1!" }
   },
   {
     "info": {
@@ -469,7 +469,7 @@
       "elizabeth12@lewis-leonard.com": "email",
       "calvinthompson": "username"
     },
-    "secrets": { "password": "1T$8KoH3p)" }
+    "secret": { "password": "1T$8KoH3p)" }
   },
   {
     "info": {
@@ -477,7 +477,7 @@
       "brittany97@johnson.com": "email",
       "harrisdavid": "username"
     },
-    "secrets": { "password": "p8SWyNBO$K" }
+    "secret": { "password": "p8SWyNBO$K" }
   },
   {
     "info": {
@@ -485,7 +485,7 @@
       "scottrivas@barnes.com": "email",
       "donnamoreno": "username"
     },
-    "secrets": { "password": "a)$D6!Ne#^" }
+    "secret": { "password": "a)$D6!Ne#^" }
   },
   {
     "info": {
@@ -493,7 +493,7 @@
       "qwarner@montgomery-marks.info": "email",
       "ericjohnson": "username"
     },
-    "secrets": { "password": "%4@v1rLfWe" }
+    "secret": { "password": "%4@v1rLfWe" }
   },
   {
     "info": {
@@ -501,7 +501,7 @@
       "andersonashley@hayes.biz": "email",
       "iriley": "username"
     },
-    "secrets": { "password": "@tV8WZMsu^" }
+    "secret": { "password": "@tV8WZMsu^" }
   },
   {
     "info": {
@@ -509,7 +509,7 @@
       "ashlee97@bennett.info": "email",
       "anthonyrodriguez": "username"
     },
-    "secrets": { "password": "e+7JWnEaES" }
+    "secret": { "password": "e+7JWnEaES" }
   },
   {
     "info": {
@@ -517,7 +517,7 @@
       "jacquelinelowe@harper.com": "email",
       "martinezmichelle": "username"
     },
-    "secrets": { "password": "wf@CwoAL+5" }
+    "secret": { "password": "wf@CwoAL+5" }
   },
   {
     "info": {
@@ -525,7 +525,7 @@
       "guerrerohector@hayden.com": "email",
       "spencergina": "username"
     },
-    "secrets": { "password": "D&XU81xj1P" }
+    "secret": { "password": "D&XU81xj1P" }
   },
   {
     "info": {
@@ -533,7 +533,7 @@
       "melissajohnson@lawrence.info": "email",
       "lauriepeterson": "username"
     },
-    "secrets": { "password": "Kg(0M$@ix7" }
+    "secret": { "password": "Kg(0M$@ix7" }
   },
   {
     "info": {
@@ -541,7 +541,7 @@
       "peterpatel@frost.com": "email",
       "cchung": "username"
     },
-    "secrets": { "password": "*3OCicEM^4" }
+    "secret": { "password": "*3OCicEM^4" }
   },
   {
     "info": {
@@ -549,7 +549,7 @@
       "sburke@myers.biz": "email",
       "mking": "username"
     },
-    "secrets": { "password": "7cNWyoy($p" }
+    "secret": { "password": "7cNWyoy($p" }
   },
   {
     "info": {
@@ -557,7 +557,7 @@
       "stacy77@blake.com": "email",
       "danielle21": "username"
     },
-    "secrets": { "password": "(aw4k9Mb&$" }
+    "secret": { "password": "(aw4k9Mb&$" }
   },
   {
     "info": {
@@ -565,7 +565,7 @@
       "erichooper@pham-nelson.info": "email",
       "moralesthomas": "username"
     },
-    "secrets": { "password": "Jw%4MWPa+O" }
+    "secret": { "password": "Jw%4MWPa+O" }
   },
   {
     "info": {
@@ -573,7 +573,7 @@
       "brucejustin@phillips-sims.com": "email",
       "eddiearnold": "username"
     },
-    "secrets": { "password": "0EtZW9rk&P" }
+    "secret": { "password": "0EtZW9rk&P" }
   },
   {
     "info": {
@@ -581,7 +581,7 @@
       "johnhamilton@adams-miller.com": "email",
       "dickersonamy": "username"
     },
-    "secrets": { "password": "o1Bu@AS1@z" }
+    "secret": { "password": "o1Bu@AS1@z" }
   },
   {
     "info": {
@@ -589,7 +589,7 @@
       "huntjennifer@hardy-white.com": "email",
       "xsmith": "username"
     },
-    "secrets": { "password": "r4m@&3Hoh%" }
+    "secret": { "password": "r4m@&3Hoh%" }
   },
   {
     "info": {
@@ -597,7 +597,7 @@
       "tammy47@sanders.org": "email",
       "charles04": "username"
     },
-    "secrets": { "password": "ctEP#8Up$w" }
+    "secret": { "password": "ctEP#8Up$w" }
   },
   {
     "info": {
@@ -605,7 +605,7 @@
       "melissaherrera@rogers-johnson.net": "email",
       "donald38": "username"
     },
-    "secrets": { "password": "@IeOeiflh4" }
+    "secret": { "password": "@IeOeiflh4" }
   },
   {
     "info": {
@@ -613,7 +613,7 @@
       "guerrataylor@miller.com": "email",
       "hunterlori": "username"
     },
-    "secrets": { "password": "2_wKaegj#1" }
+    "secret": { "password": "2_wKaegj#1" }
   },
   {
     "info": {
@@ -621,7 +621,7 @@
       "johncox@torres-larson.com": "email",
       "victoria89": "username"
     },
-    "secrets": { "password": "^+7DxEqrV%" }
+    "secret": { "password": "^+7DxEqrV%" }
   },
   {
     "info": {
@@ -629,7 +629,7 @@
       "sandra00@hogan.com": "email",
       "mwilliams": "username"
     },
-    "secrets": { "password": "wn3UfYwQ&R" }
+    "secret": { "password": "wn3UfYwQ&R" }
   },
   {
     "info": {
@@ -637,7 +637,7 @@
       "parsonsmichael@aguilar-myers.info": "email",
       "valenciawendy": "username"
     },
-    "secrets": { "password": "*5@W+lDmWS" }
+    "secret": { "password": "*5@W+lDmWS" }
   },
   {
     "info": {
@@ -645,7 +645,7 @@
       "mike10@conrad.com": "email",
       "kristyscott": "username"
     },
-    "secrets": { "password": "037AU*sG!&" }
+    "secret": { "password": "037AU*sG!&" }
   },
   {
     "info": {
@@ -653,7 +653,7 @@
       "sonya74@henry-fletcher.com": "email",
       "mirandajennifer": "username"
     },
-    "secrets": { "password": "BJ9WHo8x!3" }
+    "secret": { "password": "BJ9WHo8x!3" }
   },
   {
     "info": {
@@ -661,7 +661,7 @@
       "joneskenneth@jones-washington.com": "email",
       "chelseahawkins": "username"
     },
-    "secrets": { "password": "^q35F5Gn$*" }
+    "secret": { "password": "^q35F5Gn$*" }
   },
   {
     "info": {
@@ -669,7 +669,7 @@
       "sbell@benson.com": "email",
       "aellis": "username"
     },
-    "secrets": { "password": "DD#1AveS(0" }
+    "secret": { "password": "DD#1AveS(0" }
   },
   {
     "info": {
@@ -677,7 +677,7 @@
       "connorperez@lee.com": "email",
       "diana85": "username"
     },
-    "secrets": { "password": "&noAtAsW66" }
+    "secret": { "password": "&noAtAsW66" }
   },
   {
     "info": {
@@ -685,7 +685,7 @@
       "sheltondeborah@joseph-snow.net": "email",
       "donspence": "username"
     },
-    "secrets": { "password": "+_jv2Lbh%e" }
+    "secret": { "password": "+_jv2Lbh%e" }
   },
   {
     "info": {
@@ -693,7 +693,7 @@
       "robertmcbride@hudson.com": "email",
       "jackhall": "username"
     },
-    "secrets": { "password": ")z6WnnWsf1" }
+    "secret": { "password": ")z6WnnWsf1" }
   },
   {
     "info": {
@@ -701,7 +701,7 @@
       "yerickson@mason-johnson.com": "email",
       "newtonbrian": "username"
     },
-    "secrets": { "password": "Y1+wKH1a)m" }
+    "secret": { "password": "Y1+wKH1a)m" }
   },
   {
     "info": {
@@ -709,7 +709,7 @@
       "salaslaura@edwards.com": "email",
       "mistyarias": "username"
     },
-    "secrets": { "password": "r6EabBmE@)" }
+    "secret": { "password": "r6EabBmE@)" }
   },
   {
     "info": {
@@ -717,7 +717,7 @@
       "albert40@mitchell.com": "email",
       "ltorres": "username"
     },
-    "secrets": { "password": "!6Fa!rA!a9" }
+    "secret": { "password": "!6Fa!rA!a9" }
   },
   {
     "info": {
@@ -725,7 +725,7 @@
       "morgan89@robinson-leonard.org": "email",
       "rojasbradley": "username"
     },
-    "secrets": { "password": "Y&&C1iieLG" }
+    "secret": { "password": "Y&&C1iieLG" }
   },
   {
     "info": {
@@ -733,7 +733,7 @@
       "kfarrell@walter.com": "email",
       "feliciawilson@simon-johnson.biz": "username"
     },
-    "secrets": { "password": "s$LE2gVt@Z" }
+    "secret": { "password": "s$LE2gVt@Z" }
   },
   {
     "info": {
@@ -741,7 +741,7 @@
       "isparks@stewart-hart.com": "email",
       "gabrieladavis": "username"
     },
-    "secrets": { "password": "%mB073Jd6$" }
+    "secret": { "password": "%mB073Jd6$" }
   },
   {
     "info": {
@@ -749,7 +749,7 @@
       "sara38@hines-phillips.biz": "email",
       "taylorsamuel": "username"
     },
-    "secrets": { "password": "&fT_cb6vk8" }
+    "secret": { "password": "&fT_cb6vk8" }
   },
   {
     "info": {
@@ -757,7 +757,7 @@
       "feliciawilson@simon-johnson.biz": "email",
       "npierce": "username"
     },
-    "secrets": { "password": "z!3w$WFDud" }
+    "secret": { "password": "z!3w$WFDud" }
   },
   {
     "info": {
@@ -765,7 +765,7 @@
       "mary71@greer-lopez.biz": "email",
       "david35": "username"
     },
-    "secrets": { "password": "!*k3HGdk*j" }
+    "secret": { "password": "!*k3HGdk*j" }
   },
   {
     "info": {
@@ -773,7 +773,7 @@
       "feliciawilson@simon-johnson.biz": "email",
       "pallen": "username"
     },
-    "secrets": { "password": "z66Dni4v(+" }
+    "secret": { "password": "z66Dni4v(+" }
   },
   {
     "info": {
@@ -781,7 +781,7 @@
       "feliciawilson@simon-johnson.biz": "email",
       "alexis69": "username"
     },
-    "secrets": { "password": ")R6Oc^bK+f" }
+    "secret": { "password": ")R6Oc^bK+f" }
   },
   {
     "info": {
@@ -789,6 +789,6 @@
       "kreeves@howard.com": "email",
       "karenchavez": "username"
     },
-    "secrets": { "password": "I^1ZGPg7nx", "token": "abcdjfcbkwe", "access_id": "efasdfasf", "PAT": "aswresedf" }
+    "secret": { "password": "I^1ZGPg7nx", "token": "abcdjfcbkwe", "access_id": "efasdfasf", "PAT": "aswresedf" }
   }
 ]

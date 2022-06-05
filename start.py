@@ -15,7 +15,7 @@ from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.shortcuts import clear
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.completion import NestedCompleter
-import os, psutil
+import os
 from crypto import crypto
 
 from exceptions import WrongPassLimit
@@ -151,8 +151,6 @@ class App:
         #         if r in cred['info']:
         #             hey="hey"
         # print("=============")
-        # print(psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2)
-        # print("=============")
         # print(self.search_list[0])
         # print("=============")
         
@@ -194,7 +192,7 @@ if __name__ == "__main__":
     #         break
     #     print("=============")
     #     print(ans)
-    #     print(psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2)
+    #  
     #     print("=============")
 
     

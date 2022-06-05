@@ -10,6 +10,7 @@ from nested_completer import NestedCompleter
 from prompt_toolkit.filters import (
     Condition,
 )
+import json
 from prompt_toolkit.widgets import (
     Box,
     Button,

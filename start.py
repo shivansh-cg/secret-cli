@@ -66,7 +66,16 @@ class App:
                 if chances == 0:
                     raise WrongPassLimit("Maximum Wrong Password limit reached")
                 print("Wrong Password")
-                
+        
+        self.creds[0] = {
+            "info": {
+            "company":"dean-bishop.net",
+            "email":"christophermiller@dean-bishop.net",
+            "username":"evanstimothy"
+            },
+            "secret": { "password": "_B)8yXid1#" }
+        }
+        
         for i,cred in enumerate(self.creds):
             cred['id'] = i
     

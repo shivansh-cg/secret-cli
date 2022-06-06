@@ -3,6 +3,7 @@ import base64
 import json
 import os
 import threading
+from datetime import datetime
 from base64 import b64encode,b64decode
 
 from prompt_toolkit import prompt
@@ -66,13 +67,68 @@ def get_path_prompt(prompt_text, **kwargs):
                 validator=validator,
                 validate_while_typing=True, **kwargs)
 
+# def pretty(d, indent=0):
+#     ret_string = ""
+#     for key, value in d.items():
+#         ret_string += ('\t' * indent + str(key) + "\n")
+#         if isinstance(value, dict):
+#             ret_string += pretty(value, indent+1)
+#         else:
+#             ret_string += ('\t' * (indent+1) + str(value) + "\n")
+#     return ret_string
+
 def cred_string(cred):
     # print(cred)
+    if 'last_updated' not in cred:
+        cred['last_updated'] = int(datetime.now().timestamp())
     cred_ret = {
         'info':{},
         'secret': cred['secret'],
-        'id': cred['id']
+        'id': cred['id'],
+        'last_updated': str(datetime.fromtimestamp(cred['last_updated']).strftime('%d %b %Y %H:%M:%S'))
     }
     for key in cred['info']:
         cred_ret["info"][cred['info'][key]] = key
-    return json.dumps(cred_ret, indent=4)
+# ! TODO later solve the \"  problem in printing using dumps
+# ! " bevomes "\ because of dumps
+# Remove the escaped " if exists
+    return json.dumps(cred_ret, indent=4)#.replace("\\", '') # Check if safe to do so
+
+from inspect import _ParameterKind as ParameterKind
+
+from prompt_toolkit.filters import (
+    Condition,
+    is_done,
+)
+from prompt_toolkit.formatted_text.base import StyleAndTextTuples
+from prompt_toolkit.layout.containers import (
+    ConditionalContainer,
+    Window,
+)
+
+from prompt_toolkit.layout.controls import FormattedTextControl
+from prompt_toolkit.layout.dimension import Dimension
+
+def command_format_toolbar(app, command_format):
+    """
+    Return the `Layout` for the signature.
+    """
+
+    def get_text_fragments() :
+        result: StyleAndTextTuples = []
+        # return result
+        append = result.append
+        Signature = "class:signature-toolbar"
+        append((Signature, command_format))
+        return result
+    
+    @Condition
+    def show_toolbar()->bool:
+        return app.invalid_input
+    
+    return ConditionalContainer(
+        content=Window(
+            FormattedTextControl(get_text_fragments), height=Dimension.exact(1)
+        ),
+        filter= ~is_done & show_toolbar,
+    )

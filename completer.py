@@ -112,7 +112,7 @@ class CustomCompleter(Completer):
 
         # No space in the input: behave exactly like `WordCompleter`.
         else:
-            completer = FuzzyCompleter(completer=WordCompleter(self.my_word_dict.keys(), meta_dict=self.meta_dict),enable_fuzzy=True, pattern=r"^([a-zA-Z0-9_:]+|[^a-zA-Z0-9_\s]+)")
+            completer = FuzzyCompleter(completer=WordCompleter(self.my_word_dict.keys(), meta_dict=self.meta_dict),enable_fuzzy=True, pattern=r"^([a-zA-Z0-9_:\-\@]+|[^a-zA-Z0-9_\s]+)")
             
             yield from completer.get_completions(document, complete_event)
 

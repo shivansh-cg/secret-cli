@@ -42,6 +42,7 @@ class ListingApp:
 
     @kb.add("c-c", eager=True)
     @kb.add("c-q", eager=True)
+    @kb.add("escape", eager=True)
     def _(event):
         """
         Pressing Ctrl-Q or Ctrl-C will exit the user interface.
@@ -93,7 +94,7 @@ class ListingApp:
         def get_titlebar_text():
             return [
                 ("class:title", " Search Results "),
-                ("class:title", " (Press [Ctrl-Q] to quit.)"),
+                ("class:title", " (Press [Ctrl-Q/Ctrl-C] to quit.)"),
             ]
 
         

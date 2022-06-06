@@ -81,14 +81,20 @@ def cred_string(cred):
     # print(cred)
     if 'last_updated' not in cred:
         cred['last_updated'] = int(datetime.now().timestamp())
+    
+    if 'versioning' not in cred:
+        cred['versioning'] = []
+    
     cred_ret = {
-        'info':{},
+        'info':cred['info'],
+        # 'info':{}, # ! REMOVE IF WORKS
         'secret': cred['secret'],
         'id': cred['id'],
+        'versioning': cred['versioning'],
         'last_updated': str(datetime.fromtimestamp(cred['last_updated']).strftime('%d %b %Y %H:%M:%S'))
     }
-    for key in cred['info']:
-        cred_ret["info"][cred['info'][key]] = key
+    # for key in cred['info']: # ! REMOVE IF WORKS
+    #     cred_ret["info"][cred['info'][key]] = key
 # ! TODO later solve the \"  problem in printing using dumps
 # ! " bevomes "\ because of dumps
 # Remove the escaped " if exists

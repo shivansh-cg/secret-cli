@@ -38,7 +38,7 @@ from prompt_toolkit.layout.menus import CompletionsMenu
 from utils import cred_string,  command_format_toolbar
 class RecordActionValidator:
     
-    def validate(document):
+    def validate(document, cred):
         len_meta = {
             "edit": 4,
             "add": 4,
@@ -49,9 +49,14 @@ class RecordActionValidator:
         text_split = text.split()
         if len(text_split)>0 and text_split[0] in len_meta :
             if len(text_split) != len_meta[text_split[0]]:
-                raise ValidationError(len(text), "Incorrect Input: {command} {type} {name} {value}")
+                raise ValidationError(len(text), "Number of arguments invalid")
+            
+            if text_split[0] == "add" and text_split[2] in cred[text_split[1]]: # Name already exists in cred
+                raise ValidationError(len(text), "Name Already present in record")
+                
+                
             return
-        raise ValidationError(len(text), "Incorrect Input: {command} {type} {name} {value}")
+        raise ValidationError(len(text), "Correct Input should be: {command} {type} {name} {value}")
         
 class RecordHandler:
     log_meta = {
@@ -83,7 +88,7 @@ class RecordHandler:
             
             
     def edit(self,type:str, key:str, new_val:str):
-        if type == "info":
+        if type == "infoss": # ! REMOVE IF WORKS
             # Info keys are swapped
             self.record[type][new_val] = key
         else:    
@@ -95,15 +100,17 @@ class RecordHandler:
         # Copy this
 
     def delete_prop(self, type:str, key:str):
-        if type == "secret":
-            self.record[type].pop(key)
-        else:
-            the_key = None
-            for k in self.record[type]:
-                if self.record[type][k] == key:
-                    the_key = k
-                    break
-            self.record[type].pop(the_key, None)
+        self.record[type].pop(key)
+        # ! REMOVE IF WORKS
+        # if type == "secret":
+        #     self.record[type].pop(key)
+        # else:
+        #     the_key = None
+        #     for k in self.record[type]:
+        #         if self.record[type][k] == key:
+        #             the_key = k
+        #             break
+        #     self.record[type].pop(the_key, None)
             
     def process_input(self, input_text:str):
         split_text = input_text.split()
@@ -119,8 +126,6 @@ class RecordHandler:
             self.record['versioning'].append(str(hash(json.dumps(self.record))))
             self.record['last_updated'] = int(datetime.now().timestamp())
             
-            # Because we have swapped the key values for info
-
             self.edit(split_text[1], split_text[2], split_text[3])
     
     def print(self):
@@ -131,6 +136,7 @@ class RecordApp:
 
 
     @kb.add("c-c", eager=True)
+    @kb.add("escape", eager=True)
     @kb.add("c-q", eager=True)
     def _(event):
         """
@@ -179,7 +185,11 @@ class RecordApp:
             "secret": {key: None for key in self.record_handler.record['secret']},
         }
         
-        completor = {command: comm_completor for command in [ 'edit', 'copy', 'add', 'delete']}
+        completor = {command: comm_completor for command in [ 'edit', 'copy', 'delete']}
+        completor['add'] = {
+            "info": None,
+            "secret": None
+        }
         self.command_completer = NestedCompleter.from_nested_dict(completor, meta_dict)
     
     def command_entered(self, text: Buffer):
@@ -187,7 +197,7 @@ class RecordApp:
         # self.right_buffer.text+=text.text
         # self.left_window.title = text.text
         try:
-            RecordActionValidator.validate(text)
+            RecordActionValidator.validate(text, self.record_handler.record)
             self.record_handler.process_input(text.text)
             self.invalid_input = False
         except ValidationError as ve:
@@ -275,8 +285,8 @@ class RecordApp:
 
         def get_titlebar_text():
             return [
-                ("class:title", " Search Results "),
-                ("class:title", " (Press [Ctrl-Q] to quit.)"),
+                ("class:title", " Record "),
+                ("class:title", " (Press [Ctrl-Q/ Ctrl-C] to quit.)"),
             ]
 
         

@@ -21,14 +21,7 @@ from crypto import crypto
 from exceptions import WrongPassLimit
 from listing import ListingApp
 
-pattern_working_first = r'^((?:(?:(?:\w*):(?:\w*)) )+)(?:((?:copy)|(?:view)|(?:edit))|(\w*) ((?:copy)|(?:view)|(?:edit)))$'
 
-
-pattern1 = r"^((?:(?:(?:\w*):(?:\w*)) )+)(?:((?:copy)|(?:view)|(?:edit))|(\w*) ((?:copy)|(?:view)|(?:edit)))?"
-
- 
-pattern_final= r'^((?:(?:(?:[^ :]*):(?:[^ :]*) ?))+)(?:((?:copy)|(?:view)|(?:edit))|(\w*) ((?:copy)|(?:view)|(?:edit)))?$'
-link = r'regexr.com/6n1qo'
 class App:
     master_password = ""
     
@@ -120,7 +113,7 @@ class App:
                 if r not in search:
                     match_found = False
             if match_found:
-                search_results.append((cred_string(self.creds[i]), ",".join([k for k in (self.creds[i]['info'])])))
+                search_results.append((cred_string(self.creds[i]), ",".join([self.creds[i]['info'][k] for k in (self.creds[i]['info'])])))
                 
         # Check count and if there exists a sub command
         if len(search_results) == 0:

@@ -15,7 +15,10 @@ def generate_mfa(secret = pyotp.random_base32()):
 def verify_mfa(collection, _id,code):
     secret = collection.find_one({'_id':_id})['mfa_secret']
     totp = pyotp.TOTP(secret)
-    print(totp.now())
+    return totp.verify(code)
+
+def verify_mfa_by_secret(mfa_secret,code):
+    totp = pyotp.TOTP(mfa_secret)
     return totp.verify(code)
 
 def getUserInfo(credentials):
@@ -33,9 +36,11 @@ def upsert_mongo(collection: collection.Collection, user_info):
 def add_device_code(collection: collection.Collection, id, code):
     collection.update_one({"_id": id}, {'$set': {f'device_codes.{code}': time()}})
 
-def verify_device_code(collection: collection.Collection, code):
-    user_info = collection.find_one({"code": code})
-    print(user_info)
+def verify_device_code(collection: collection.Collection, code, secret_code=9234, mfa_code = "000000"):
+    user_info = collection.find_one({"code": code, "secret_code": secret_code})
+    if 'mfa_secret' in user_info:
+        if not verify_mfa_by_secret(user_info['mfa_secret'], mfa_code):
+            return False
     if user_info :
         print(time()-user_info['code_time'] <60)
         if time()-user_info['code_time'] < 60:

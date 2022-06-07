@@ -26,6 +26,7 @@ class BaseCLI:
                 "drive": None,
                 "local": None
             },
+            "save": None,
             "add": None,
             "exit": None,
             "lock": None
@@ -68,7 +69,10 @@ class BaseCLI:
         if len(tokens) == 0:
             return
         processed_input = {}
-        if tokens[0] in self.main_commands:
+        
+        if tokens[0]  == "save":
+            processed_input['type'] = "save"
+        elif tokens[0] in self.main_commands:
             processed_input['type'] = tokens[0]
             processed_input['arg'] = tokens[1:]
             # processed_input[tokens[0]] = tokens[1:]
@@ -86,7 +90,7 @@ class BaseCLI:
         def valiator(input_str):
             
             import re
-            pattern1 = r'^(?:((?:sync) (?:(?:drive)|(?:local)))|(?:add)|(?:exit)|(?:lock))$'
+            pattern1 = r'^(?:((?:sync) (?:(?:drive)|(?:local)))|(?:add)|(?:save)|(?:exit)|(?:lock))$'
             
             pattern2= r'^((?:(?:(?:[^ :]*):(?:[^ :]*) ?))+)(?:((?:copy)|(?:view)|(?:edit))|(\w*) ((?:copy)|(?:view)|(?:edit)))?$'
             z1 = re.match(pattern1, input_str)

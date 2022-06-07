@@ -162,6 +162,34 @@ def add_device():
             return {"msg": "Failed"}
         return {"msg": "Success", "info": ans }
           
+@app.route('/add_device2', methods=['GET', 'POST', 'PUT'])
+def add_device2():
+    # user_info = getUserInfo(credentials)
+    if request.method == "GET":
+        import random
+        secret_code = request.args.get('secret_code',9234)
+        # user_email = request.args.get('email')
+        # ! Later use something else than random
+        code = random.randint(100000, 999999)
+        if 'credentials' not in flask.session:
+            return flask.redirect('authorize')
+        # Place the secret code in db
+        credentials = flask.session['credentials']
+        # add_device_code(profiles, credentials['_id'],code)
+        import time
+        credentials['code'] = f'{code}'
+        credentials['secret_code'] = secret_code
+        credentials['code_time'] = time.time()
+        print(credentials)
+        device_codes.replace_one({"_id": credentials['_id']}, credentials, upsert=True)
+        return {"msg": code}
+    elif request.method == "POST":
+        req_data = json.loads(request.get_data())
+        ans = verify_device_code(device_codes, req_data['code'], secret_code)
+        if not ans:
+            return {"msg": "Failed"}
+        return {"msg": "Success", "info": ans }
+          
     
 
 @app.route('/authorize')

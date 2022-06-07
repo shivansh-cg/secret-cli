@@ -1,41 +1,25 @@
+import json
 from datetime import datetime
-from posixpath import split
-from wsgiref.validate import validator 
+
 from prompt_toolkit.application import Application
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.layout.containers import HSplit, VSplit, Window, WindowAlign, FloatContainer, Float
 from prompt_toolkit.layout.controls import BufferControl, FormattedTextControl
 from prompt_toolkit.layout.layout import Layout
-# from prompt_toolkit.completion import NestedCompleter
-from nested_completer import NestedCompleter
-from prompt_toolkit.filters import (
-    Condition,
-)
-import json
 from prompt_toolkit.widgets import (
-    Box,
-    Button,
-    Checkbox,
-    Dialog,
     Frame,
-    Label,
-    MenuContainer,
-    MenuItem,
-    ProgressBar,
-    RadioList,
     TextArea,
 )
 from prompt_toolkit.validation import Validator, ValidationError
-
-from prompt_toolkit.formatted_text import (
-    to_formatted_text
-)
 from prompt_toolkit.styles import Style
-from radios import MyRadio
 from prompt_toolkit.layout.menus import CompletionsMenu
 
-from utils import cred_string,  command_format_toolbar
+from utils import cred_string
+from nested_completer import NestedCompleter
+import pyperclip
+
+
 class RecordActionValidator:
     
     def validate(document, cred):
@@ -57,7 +41,9 @@ class RecordActionValidator:
                 
             return
         raise ValidationError(len(text), "Correct Input should be: {command} {type} {name} {value}")
-        
+   
+   
+     
 class RecordHandler:
     log_meta = {
         "edit": {
@@ -77,6 +63,8 @@ class RecordHandler:
             "info": "Deleted Info {}"
         }
     }
+    
+    
     def __init__(self, record) -> None:
         self.record:dict = record
         self.last_action = []
@@ -88,30 +76,23 @@ class RecordHandler:
             
             
     def edit(self,type:str, key:str, new_val:str):
-        if type == "infoss": # ! REMOVE IF WORKS
-            # Info keys are swapped
-            self.record[type][new_val] = key
-        else:    
-            self.record[type][key] = new_val
+        self.record['last_updated'] = int(datetime.now().timestamp())
+        self.record[type][key] = new_val
+        self.record['versioning'].append(str(hash(json.dumps(self.record))))
+        
         
     def copy(self, type:str, key:str):
         # Copy the val into clipboard
         val = self.record[type][key]
+        pyperclip.copy(val)
         # Copy this
+
 
     def delete_prop(self, type:str, key:str):
         self.record[type].pop(key)
-        # ! REMOVE IF WORKS
-        # if type == "secret":
-        #     self.record[type].pop(key)
-        # else:
-        #     the_key = None
-        #     for k in self.record[type]:
-        #         if self.record[type][k] == key:
-        #             the_key = k
-        #             break
-        #     self.record[type].pop(the_key, None)
-            
+        self.record['versioning'].append(str(hash(json.dumps(self.record))))
+        
+        
     def process_input(self, input_text:str):
         split_text = input_text.split()
         self.last_action = self.log_meta[split_text[0]][split_text[1]].format(split_text[2])
@@ -121,19 +102,14 @@ class RecordHandler:
             self.delete_prop(split_text[1], split_text[2])
                 
         elif split_text[0] == "add" or split_text[0] == "edit":
-            # Update the version history as well
-            # self.record
-            self.record['versioning'].append(str(hash(json.dumps(self.record))))
-            self.record['last_updated'] = int(datetime.now().timestamp())
-            
             self.edit(split_text[1], split_text[2], split_text[3])
+    
     
     def print(self):
         print(cred_string(self.record))
 
 class RecordApp:
     kb = KeyBindings()
-
 
     @kb.add("c-c", eager=True)
     @kb.add("escape", eager=True)
@@ -150,8 +126,10 @@ class RecordApp:
         """
         event.app.exit()
     
+    
     def callback(self, data):
         self.right_buffer.text = data 
+    
     
     def input_validator(text:str):
         text_split = text.split()
@@ -173,13 +151,7 @@ class RecordApp:
             'info': "Searchable Property",
             'secret': "Secure Property",
         }
-        # completor = {
-        #     "add": {
-        #         "info": dict(self.record['info'].keys()),
-        #         "secret": dict(self.record['secret'].keys()),
-        #     },
-        # }
-        # completor = { {command: {"info": dict(self.record['info'].keys()), "secret": dict(self.record['secret'].keys())}} for command in ['add', 'edit', 'secret']}
+        
         comm_completor = {
             "info": {key: None for key in self.record_handler.record['info']},
             "secret": {key: None for key in self.record_handler.record['secret']},
@@ -192,10 +164,8 @@ class RecordApp:
         }
         self.command_completer = NestedCompleter.from_nested_dict(completor, meta_dict)
     
+    
     def command_entered(self, text: Buffer):
-        
-        # self.right_buffer.text+=text.text
-        # self.left_window.title = text.text
         try:
             RecordActionValidator.validate(text, self.record_handler.record)
             self.record_handler.process_input(text.text)
@@ -206,8 +176,6 @@ class RecordApp:
             
         self.update_ui()
             
-        # self.log_buffer.text += text.text
-        # self.log_buffer.text +='\n'
         
     def layout(self):   
         self.init_completer()
@@ -235,13 +203,10 @@ class RecordApp:
             completer=self.command_completer,
             accept_handler=self.command_entered,
             validator=validator,
-            # input_processors= 
             height=4
         )
 
 
-        # 1. First we create the layout
-        #    --------------------------
         self.style = Style([
             ('input-field', '#44ff44 '),
             
@@ -280,15 +245,11 @@ class RecordApp:
                 ],
             )
         
-  
-
-
         def get_titlebar_text():
             return [
                 ("class:title", " Record "),
                 ("class:title", " (Press [Ctrl-Q/ Ctrl-C] to quit.)"),
             ]
-
         
         self.root_container = HSplit(
             [
@@ -304,6 +265,7 @@ class RecordApp:
                 self.body,
             ]
         )
+    
     
     def update_ui(self) -> None:
         self.right_buffer.text = cred_string(self.record_handler.record)
@@ -327,24 +289,12 @@ class RecordApp:
             full_screen=True,
             style=self.style
         )
-        pass
     
     def run(self):
         """returns the result of the search
 
         """
         return self.app.run()
-    
-    def input_title(self, text):
-        text = text.split()
-        meta_dict = {
-            "copy": "Copied"
-        }
-    
-    def process_input(self, text):
-        
-        pass
-    
 
 if __name__ =="__main__":
     import json

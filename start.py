@@ -9,7 +9,10 @@ from utils import cred_string, toggle_input
 from record import RecordApp
 from utils import toggle_input
 
-
+from threading import Thread
+from InquirerPy import inquirer
+from InquirerPy.base.control import Choice
+from InquirerPy.validator import PasswordValidator
 from prompt_toolkit import prompt
 from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.shortcuts import clear
@@ -20,7 +23,9 @@ from crypto import crypto
 
 from exceptions import WrongPassLimit
 from listing import ListingApp
+import time
 
+SAMPLE_CONFIG = [{'info': {'company': 'andSons', 'email': 'gregory06@evans.info', 'username': 'john76'}, 'secret': {'password': 'L$@0ZnCa3B'}, 'id': 0}, {'info': {'company': 'LLC', 'email': 'nelliott@barnes.com', 'username': 'lindseyneal'}, 'secret': {'password': '((h%7QNfK$'}, 'id': 1}]
 
 class App:
     master_password = ""
@@ -47,9 +52,7 @@ class App:
         # ).run()
         chances = 3
         while True:
-            # ! Remove later
-            # self.master_password = toggle_input("Please Enter Master Password: ")   
-            self.master_password = "MyPass"     
+            self.master_password = toggle_input("Please Enter Master Password: ")   
             try:
                 c = crypto(self.master_password, **(self.creds))
                 self.creds = json.loads(c.decrypt().to_dict()['data'])
@@ -59,15 +62,6 @@ class App:
                 if chances == 0:
                     raise WrongPassLimit("Maximum Wrong Password limit reached")
                 print("Wrong Password")
-        
-        self.creds[0] = {
-            "info": {
-            "company":"dean-bishop.net",
-            "email":"christophermiller@dean-bishop.net",
-            "username":"evanstimothy"
-            },
-            "secret": { "password": "_B)8yXid1#" }
-        }
         
         for i,cred in enumerate(self.creds):
             cred['id'] = i
@@ -82,13 +76,12 @@ class App:
             # with open("encrypted_data.json", "r") as file:
             #     self.creds = (file.read())
             # Authenticate and decrypt
-        except:
+        except Exception as e:
             # Create a startup json file for proper functionality
-            with open("user_cred.json", "r") as file:
-                self.creds = (json.loads(file.read()))
-                for i,cred in enumerate(self.creds):
-                    cred['id'] = i
-        
+            print(e)
+            return
+        self.auto_save_thread = Thread(target=self.auto_save, daemon=True)
+        self.auto_save_thread.start()
         
         # Preprocessing for searching
         self.search_preprocessing()
@@ -100,38 +93,57 @@ class App:
     
     def check_configs(self)-> None:
         home = os.path.expanduser("~")
-        config_folder = os.path.join(home, 'secret_cli')
-        if not os.path.isdir(config_folder):
+        self.config_folder = os.path.join(home, 'secret_cli')
+        if not os.path.isdir(self.config_folder):
             # Config Folder doesn't exists
-            os.mkdir(config_folder)
-        available_configs = os.listdir(config_folder)
+            os.mkdir(self.config_folder)
+        available_configs = os.listdir(self.config_folder)
         if len(available_configs) == 0:
-            self.creds = {
-                "data": {
-                    "creds": [],
-                    # "google_drive": {}
-                }
-                # "mfa_secret": "",
-            }
-            return False 
+            # Create a new Password
+            new_password = inquirer.secret(
+                message="New password:",
+                validate=PasswordValidator(length=4, number=True), # ! use the below validator later
+                # validate=PasswordValidator(length=8, cap=True, special=True, number=True),
+                transformer=lambda _: "[hidden]",
+                long_instruction="Password require length of 8, 1 cap char, 1 special char and 1 number char.",
+            ).execute()
+            confirm_password = inquirer.secret(
+                message="Confirm password:",
+                validate=lambda text: text == new_password,
+                transformer=lambda _: "[hidden]",
+                long_instruction="Password require length of 8, 1 cap char, 1 special char and 1 number char.",
+            ).execute()
+            self.master_password = confirm_password
+            self.chosen_config = f"config{(str(hash(time.time())))[2:]}.json"
+            self.creds = SAMPLE_CONFIG
+            return True 
         else:
-            from InquirerPy import inquirer
-            from InquirerPy.base.control import Choice
-            selected = inquirer.select(
+            self.chosen_config = inquirer.select(
                 message="Select the Credentials File to use",
                 choices= available_configs,
                 cycle=True
             ).execute()
             
-            with open(os.path.join(config_folder, selected)) as f:
+            with open(os.path.join(self.config_folder, self.chosen_config)) as f:
                 self.creds = json.loads(f.read())
-            return True
+            return False
             
     def search_preprocessing(self):
         self.search_list = []
         # print(type(self.creds))
         for cred in self.creds:
             self.search_list.append(set([ f'{key}:{cred["info"][key]}' for key in cred['info'] ]))
+            
+    def save_cred(self):
+        encryptedData = crypto(self.master_password, data = json.dumps(self.creds)).encrypt().to_dict()
+        with open(os.path.join(self.config_folder, self.chosen_config), "w") as file:
+            file.write(json.dumps(encryptedData))
+            
+    def auto_save(self):
+        while True:
+            # Save every 10 seconds
+            time.sleep(10)
+            self.save_cred()
             
             
     def search_result(self, processed_input):
@@ -153,39 +165,19 @@ class App:
             return
         app = ListingApp(search_results)
         chosen = app.run()
+        if chosen == None:
+            return None
         chosen_id = json.loads(chosen[0])['id']
         return chosen_id
     
     def process_input(self, processed_input):
-        # print("=============")
-        # print(json.dumps(processed_input, indent=4))
-        if processed_input['type'] == "search":
+        if processed_input['type'] == "save":
+            self.save_cred()  
+        elif processed_input['type'] == "search":
             chosen_id = self.search_result(processed_input)
-            # print(self.creds[chosen_id])
-            app = RecordApp(self.creds[chosen_id])
-            app.run()
-        # res = (text_input.split())
-        
-        # for i,search in enumerate(self.search_list):
-        #     match_found = True
-        #     for r in res:
-        #         if r not in search:
-        #             match_found = False
-        #     if match_found:
-        #         print(i)
-        #         print(json.dumps(self.creds[i], indent=4))
-        #         print(search)
-        #         print("------------")
-        #         print("------------")
-        # for cred in self.creds:
-        #     for r in res:
-        #         r = r.split(":")
-        #         if r[0] not in cred['info']:
-        #         if r in cred['info']:
-        #             hey="hey"
-        # print("=============")
-        # print(self.search_list[0])
-        # print("=============")
+            if chosen_id != None:
+                app = RecordApp(self.creds[chosen_id])
+                app.run()
         
         
 
@@ -194,38 +186,6 @@ if __name__ == "__main__":
         app = App()
     except (WrongPassLimit):
         print("Max Limit reached for Wrong Passwords, Try Again")
-        
-    # from InquirerPy import inquirer
 
-    # name = inquirer.text(message="What's your name:").execute()
-    # fav_lang = inquirer.select(
-    #     message="What's your favourite programming language:",
-    #     choices=["Go", "Python", "Rust", "JavaScript"],
-    # ).execute()
-    # print(fav_lang)
-    # creds = {}
-    
-    # for i in range(10000):
-    #     creds[f'i'] = {
-    #         "abcd": None,
-    #         "dcba": None
-    #     }
-    # creds["hh"] = {
-    #     "hgfdg": None,
-    #     "ghfh": None
-    # }
-    # # with open("user_cred.json", "r") as file:
-    # #     creds = json.loads(file.read())
-    # # creds = dict(creds)
-    # ps = PromptSession(">")
-    # while True:
-    #     ans = ps.prompt(">", completer=NestedCompleter.from_nested_dict(creds))
-    #     # ans = ps.prompt(">")
-    #     if ans == "Exit":
-    #         break
-    #     print("=============")
-    #     print(ans)
-    #  
-    #     print("=============")
 
     

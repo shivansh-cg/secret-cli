@@ -51,7 +51,7 @@ class App:
             # self.master_password = toggle_input("Please Enter Master Password: ")   
             self.master_password = "MyPass"     
             try:
-                c = crypto(self.master_password, **json.loads(self.creds))
+                c = crypto(self.master_password, **(self.creds))
                 self.creds = json.loads(c.decrypt().to_dict()['data'])
                 break
             except:
@@ -76,11 +76,14 @@ class App:
         # Read the credential file
         self.creds = []
         try:
-            with open("encrypted_data.json", "r") as file:
-                self.creds = (file.read())
+            if not self.check_configs():
+                self.authenticate()
+            
+            # with open("encrypted_data.json", "r") as file:
+            #     self.creds = (file.read())
             # Authenticate and decrypt
-            self.authenticate()
         except:
+            # Create a startup json file for proper functionality
             with open("user_cred.json", "r") as file:
                 self.creds = (json.loads(file.read()))
                 for i,cred in enumerate(self.creds):
@@ -94,6 +97,35 @@ class App:
         # self.main_app = cliApp(creds#, self.input_rec)
         
         self.main_app.run()    
+    
+    def check_configs(self)-> None:
+        home = os.path.expanduser("~")
+        config_folder = os.path.join(home, 'secret_cli')
+        if not os.path.isdir(config_folder):
+            # Config Folder doesn't exists
+            os.mkdir(config_folder)
+        available_configs = os.listdir(config_folder)
+        if len(available_configs) == 0:
+            self.creds = {
+                "data": {
+                    "creds": [],
+                    # "google_drive": {}
+                }
+                # "mfa_secret": "",
+            }
+            return False 
+        else:
+            from InquirerPy import inquirer
+            from InquirerPy.base.control import Choice
+            selected = inquirer.select(
+                message="Select the Credentials File to use",
+                choices= available_configs,
+                cycle=True
+            ).execute()
+            
+            with open(os.path.join(config_folder, selected)) as f:
+                self.creds = json.loads(f.read())
+            return True
             
     def search_preprocessing(self):
         self.search_list = []
@@ -123,7 +155,6 @@ class App:
         chosen = app.run()
         chosen_id = json.loads(chosen[0])['id']
         return chosen_id
-        print(chosen_id)
     
     def process_input(self, processed_input):
         # print("=============")

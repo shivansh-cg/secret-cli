@@ -9,7 +9,10 @@ import flask
 from markupsafe import Markup
 import requests
 import io
+import string
 from flask import render_template, request
+import time
+import random
 
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
@@ -113,33 +116,47 @@ def test_api_request():
 @app.route('/upload', methods=['POST'])
 def config_upload():
     data = json.loads(request.get_data())
-    if not verify_mfa(profiles, data['_id'], data['code']):
+    if not verify_mfa(profiles, data['config']['_id'], data['mfa_code']):
         return {"msg": "MFA Failed"}
-    credentials = get_credentials(data)
+    credentials = get_credentials(data['config']['google_auth'])
 
     drive = googleapiclient.discovery.build(
         'drive', 'v3', credentials=credentials)
     
     if request.method == 'POST':
-        da = drive_backend.DriveAPI(drive)
-        da.upload_config(data['config_data'])
-        return {"msg": "Success"}
+        da = drive_backend.DriveAPI(drive, data['config']['config_filename'])
+        return {"msg": "Success", "fileid": da.upload_config(data['config_data'])}
 
-@app.route('/get')
+@app.route('/get', methods=['POST'])
 def config_get():
-    credentials = get_credentials(json.loads(request.get_data()))
+    data = json.loads(request.get_data())
+    credentials = get_credentials(data['config']['google_auth'])
+
+    drive = googleapiclient.discovery.build(
+        'drive', 'v3', credentials=credentials)
+    
+    da = drive_backend.DriveAPI(drive, data['config']['config_filename'], data['config'].get('config_fileid', None))
+    return da.get_config()
+
+@app.route('/getListing', methods=['POST'])
+def config_listing():
+    data = json.loads(request.get_data())
+    credentials = get_credentials(data['config']['google_auth'])
 
     drive = googleapiclient.discovery.build(
         'drive', 'v3', credentials=credentials)
     
     da = drive_backend.DriveAPI(drive)
-    return da.get_config()
-  
+    return {
+        "msg": "Success", 
+        "listing": da.get_config_listing()
+    }
+
 @app.route('/creds')
 def get_credss():
     return flask.session['credentials']
   
-@app.route('/add_device', methods=['GET', 'POST', 'PUT'])
+@app.route('/add_device_old', methods=['GET', 'POST', 'PUT'])
 def add_device():
     # user_info = getUserInfo(credentials)
     if request.method == "GET":
@@ -162,33 +179,68 @@ def add_device():
             return {"msg": "Failed"}
         return {"msg": "Success", "info": ans }
           
-@app.route('/add_device2', methods=['GET', 'POST', 'PUT'])
-def add_device2():
+# @app.route('/add_device', methods=['GET', 'POST', 'PUT'])
+# def add_device2():
+#     # user_info = getUserInfo(credentials)
+#     if request.method == "GET":
+#         import random
+#         secret_code = request.args.get('secret_code',9234)
+#         # user_email = request.args.get('email')
+#         # ! Later use something else than random
+#         # code = random.randint(100000, 999999)
+#         code = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+#         if 'credentials' not in flask.session:
+#             return flask.redirect('authorize')
+#         # Place the secret code in db
+#         credentials = flask.session['credentials']
+#         # add_device_code(profiles, credentials['_id'],code)
+#         import time
+#         credentials['code'] = f'{code}'
+#         credentials['secret_code'] = secret_code
+#         credentials['code_time'] = time.time()
+#         print(credentials)
+#         device_codes.replace_one({"_id": credentials['_id']}, credentials, upsert=True)
+#         return {"msg": code}
+#     elif request.method == "POST":
+#         req_data = json.loads(request.get_data())
+#         ans = verify_device_code(device_codes, req_data['code'], req_data.get('secret_code', 9234))
+#         if not ans:
+#             return {"msg": "Failed"}
+#         return {"msg": "Success", "info": ans }
+          
+          
+@app.route('/add_device/<special_code>', methods=['GET', 'POST', 'PUT'])
+def add_device2(special_code):
     # user_info = getUserInfo(credentials)
     if request.method == "GET":
-        import random
-        secret_code = request.args.get('secret_code',9234)
         # user_email = request.args.get('email')
+        
         # ! Later use something else than random
-        code = random.randint(100000, 999999)
+        code = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+        
         if 'credentials' not in flask.session:
             return flask.redirect('authorize')
+        
         # Place the secret code in db
         credentials = flask.session['credentials']
-        # add_device_code(profiles, credentials['_id'],code)
-        import time
+        
         credentials['code'] = f'{code}'
-        credentials['secret_code'] = secret_code
+        credentials['special_code'] = special_code
         credentials['code_time'] = time.time()
+        
+        credentials['mfa_secret'] = profiles.find_one({"_id": credentials['_id']}).get("mfa_secret", None)
+        
         print(credentials)
         device_codes.replace_one({"_id": credentials['_id']}, credentials, upsert=True)
         return {"msg": code}
+    
+    
     elif request.method == "POST":
         req_data = json.loads(request.get_data())
-        ans = verify_device_code(device_codes, req_data['code'], secret_code)
+        ans = verify_device_code(device_codes,code=req_data['code'], special_code=special_code,mfa_code=req_data['mfa_code'])
         if not ans:
             return {"msg": "Failed"}
-        return {"msg": "Success", "info": ans }
+        return {"msg": "Success", "config": ans }
           
     
 

@@ -23,8 +23,8 @@ class BaseCLI:
     def refresh(self):
         self.main_commands = {
             "sync": {
-                "drive": None,
-                "local": None
+                "push": None,
+                "pull": None
             },
             "save": None,
             "add": None,
@@ -90,7 +90,7 @@ class BaseCLI:
         def valiator(input_str):
             
             import re
-            pattern1 = r'^(?:((?:sync) (?:(?:drive)|(?:local)))|(?:add)|(?:save)|(?:exit)|(?:lock))$'
+            pattern1 = r'^(?:((?:sync) (?:(?:push)|(?:pull)))|(?:add)|(?:save)|(?:exit)|(?:lock))$'
             
             pattern2= r'^((?:(?:(?:[^ :]*):(?:[^ :]*) ?))+)(?:((?:copy)|(?:view)|(?:edit))|(\w*) ((?:copy)|(?:view)|(?:edit)))?$'
             z1 = re.match(pattern1, input_str)

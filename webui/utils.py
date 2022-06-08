@@ -36,21 +36,29 @@ def upsert_mongo(collection: collection.Collection, user_info):
 def add_device_code(collection: collection.Collection, id, code):
     collection.update_one({"_id": id}, {'$set': {f'device_codes.{code}': time()}})
 
-def verify_device_code(collection: collection.Collection, code, secret_code=9234, mfa_code = "000000"):
-    user_info = collection.find_one({"code": code, "secret_code": secret_code})
-    if 'mfa_secret' in user_info:
-        if not verify_mfa_by_secret(user_info['mfa_secret'], mfa_code):
-            return False
-    if user_info :
-        print(time()-user_info['code_time'] <60)
-        if time()-user_info['code_time'] < 60:
-            collection.delete_one({"code": code})
-            del user_info['code']
-            del user_info['code_time']
-            return user_info
-        else:
-            collection.delete_one({"code": code})
-            return False
+def verify_device_code(collection: collection.Collection, code, special_code, mfa_code = "000000"):
+    user_info = collection.find_one({"code": code, "special_code": special_code})
+    
+    response_obj = {
+        "_id": user_info['_id'],
+        "google_auth": {
+            "refresh_token": user_info["refresh_token"],
+            "token_uri": user_info["token_uri"],
+            "token": user_info["token_uri"],
+            "scopes": user_info["scopes"],
+        }
+    }
+    if user_info:
+        if 'mfa_secret' in user_info:
+            if not verify_mfa_by_secret(user_info['mfa_secret'], mfa_code):
+                return False
+        if user_info :
+            if time()-user_info['code_time'] < 60:
+                collection.delete_one({"code": code})
+                return response_obj
+            else:
+                collection.delete_one({"code": code})
+                return False
     return False
             
             
@@ -59,4 +67,5 @@ def mfa_exists(collection, id):
     if 'mfa_secret' not in user:
         return False
     return True
+    
     

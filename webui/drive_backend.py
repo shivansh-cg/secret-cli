@@ -16,14 +16,16 @@ from googleapiclient.http import MediaFileUpload
 
 class DriveAPI:
 
-    config_filename = "pyvault_config.json" # Intermediate file to store the configuration
+    #config_filename = "pyvault_config.json" # Intermediate file to store the configuration
     config_fileid = None # the fileid for the configuration file drive
 
 
-    def __init__(self, service) -> None:
+    def __init__(self, service, config_filename = None, config_fileid = None) -> None:
         
         # Initialize the service
         self.service = service
+        self.config_fileid = config_fileid
+        self.config_filename = config_filename
         self.config_exists()
     """
         Sync the config data to the google drive
@@ -59,6 +61,7 @@ class DriveAPI:
                                             media_body=media,
                                             fields='id').execute()
             self.config_fileid = file['id']
+        return self.config_fileid
         # if os.path.exists(filename):
         #     os.remove(filename)
 
@@ -95,3 +98,12 @@ class DriveAPI:
                 return True
 
         return False
+
+    def get_config_listing(self):
+        listing = []
+        response = self.service.files().list(spaces='appDataFolder').execute()
+        # print(response)
+        for file in response.get('files', []):
+            listing.append((file.get('id'), file.get('name')))
+
+        return listing

@@ -1,9 +1,11 @@
 import json
+from typing import Dict
 from prompt_toolkit import PromptSession, prompt
 
 from prompt_toolkit.shortcuts import input_dialog
 
 from BaseCLI import BaseCLI
+from sync import SyncHandler
 from utils import cred_string, toggle_input
 
 from record import RecordApp
@@ -25,7 +27,7 @@ from exceptions import WrongPassLimit
 from listing import ListingApp
 import time
 
-SAMPLE_CONFIG = [{'info': {'company': 'andSons', 'email': 'gregory06@evans.info', 'username': 'john76'}, 'secret': {'password': 'L$@0ZnCa3B'}, 'id': 0}, {'info': {'company': 'LLC', 'email': 'nelliott@barnes.com', 'username': 'lindseyneal'}, 'secret': {'password': '((h%7QNfK$'}, 'id': 1}]
+SAMPLE_CONFIG = {"creds": [{'info': {'company': 'andSons', 'email': 'gregory06@evans.info', 'username': 'john76'}, 'secret': {'password': 'L$@0ZnCa3B'}, 'id': 0}, {'info': {'company': 'LLC', 'email': 'nelliott@barnes.com', 'username': 'lindseyneal'}, 'secret': {'password': '((h%7QNfK$'}, 'id': 1}], 'config':{"config_filename": ""}}
 
 class App:
     master_password = ""
@@ -35,6 +37,7 @@ class App:
     list_app = None # Handles listing all the blocks after doing a search operation without single target
     edit_add_app = None # Handles when we are editing or adding a new secret to a block
     creds = None
+    config = None
     """
     Start with taking master password and also MFA(later on)
     """
@@ -56,6 +59,8 @@ class App:
             try:
                 c = crypto(self.master_password, **(self.creds))
                 self.creds = json.loads(c.decrypt().to_dict()['data'])
+                self.config = self.creds["config"]
+                self.creds = self.creds["creds"]
                 break
             except:
                 chances-=1
@@ -91,6 +96,12 @@ class App:
         
         self.main_app.run()    
     
+    def read_config(self) -> Dict:
+        with open(os.path.join(self.config_folder, self.chosen_config)) as f:
+            return json.loads(f.read())
+        return False
+            
+    
     def check_configs(self)-> None:
         home = os.path.expanduser("~")
         self.config_folder = os.path.join(home, 'secret_cli')
@@ -115,7 +126,10 @@ class App:
             ).execute()
             self.master_password = confirm_password
             self.chosen_config = f"config{(str(hash(time.time())))[2:]}.json"
-            self.creds = SAMPLE_CONFIG
+            self.creds = SAMPLE_CONFIG['creds']
+            self.config = SAMPLE_CONFIG['config']
+            self.config['config_filename'] = self.chosen_config
+            self.save_data()
             return True 
         else:
             self.chosen_config = inquirer.select(
@@ -134,8 +148,12 @@ class App:
         for cred in self.creds:
             self.search_list.append(set([ f'{key}:{cred["info"][key]}' for key in cred['info'] ]))
             
-    def save_cred(self):
-        encryptedData = crypto(self.master_password, data = json.dumps(self.creds)).encrypt().to_dict()
+    def save_data(self):
+        data = {
+            "creds": self.creds,
+            "config": self.config
+        }
+        encryptedData = crypto(self.master_password, data = json.dumps(data)).encrypt().to_dict()
         with open(os.path.join(self.config_folder, self.chosen_config), "w") as file:
             file.write(json.dumps(encryptedData))
             
@@ -143,7 +161,7 @@ class App:
         while True:
             # Save every 10 seconds
             time.sleep(10)
-            self.save_cred()
+            self.save_data()
             
             
     def search_result(self, processed_input):
@@ -171,8 +189,10 @@ class App:
         return chosen_id
     
     def process_input(self, processed_input):
+        if processed_input['type'] == "sync":
+            sh = SyncHandler(self, processed_input['arg'])
         if processed_input['type'] == "save":
-            self.save_cred()  
+            self.save_data()  
         elif processed_input['type'] == "search":
             chosen_id = self.search_result(processed_input)
             if chosen_id != None:

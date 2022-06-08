@@ -52,6 +52,9 @@ db = client.flask_db
 profiles = db.profiles
 device_codes = db.device_codes
 
+if not os.path.exists('tmp'):
+    os.mkdir('tmp')
+
 global_secret = {}
 with open(CLIENT_SECRETS_FILE, "r") as f:
     global_secret = json.loads(f.read())['web']
@@ -219,7 +222,7 @@ def add_device2(special_code):
         code = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
         
         if 'credentials' not in flask.session:
-            return flask.redirect('authorize')
+            return flask.redirect(flask.url_for('authorize'))
         
         # Place the secret code in db
         credentials = flask.session['credentials']
@@ -229,6 +232,9 @@ def add_device2(special_code):
         credentials['code_time'] = time.time()
         
         credentials['mfa_secret'] = profiles.find_one({"_id": credentials['_id']}).get("mfa_secret", None)
+        
+        if credentials['mfa_secret'] == None:
+            return flask.redirect(flask.url_for('MFA_register'))
         
         print(credentials)
         device_codes.replace_one({"_id": credentials['_id']}, credentials, upsert=True)

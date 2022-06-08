@@ -140,6 +140,8 @@ class SyncHandler:
             
             print(req_data)
             if req_data.get("msg", "Failed") == "Success":
+                self.app.config['config_fileid'] = req_data['fileid']
+                self.app.save_data()
                 return
             
             chances-=1

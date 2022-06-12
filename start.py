@@ -6,7 +6,7 @@ from prompt_toolkit.shortcuts import input_dialog
 
 from BaseCLI import BaseCLI
 from sync import SyncHandler
-from utils import cred_string, toggle_input
+from utils import cred_string, gen_random_cred, toggle_input
 
 from record import RecordApp
 from utils import toggle_input
@@ -175,7 +175,8 @@ class App:
                 if r not in search:
                     match_found = False
             if match_found:
-                search_results.append((cred_string(self.creds[i]), ",".join([self.creds[i]['info'][k] for k in (self.creds[i]['info'])])))
+                search_results.append(self.creds[i])
+                # search_results.append((cred_string(self.creds[i]), ",".join([self.creds[i]['info'][k] for k in (self.creds[i]['info'])])))
                 
         # Check count and if there exists a sub command
         if len(search_results) == 0:
@@ -185,13 +186,32 @@ class App:
         chosen = app.run()
         if chosen == None:
             return None
-        chosen_id = json.loads(chosen[0])['id']
-        return chosen_id
+        # chosen_id = json.loads(chosen[0])['id']
+        # return chosen_id
+        return search_results[int(chosen[0])]
     
     def process_input(self, processed_input):
+
         if processed_input['type'] == "sync":
             sh = SyncHandler(self, processed_input['arg'])
-        if processed_input['type'] == "save":
+        elif processed_input['type'] == 'new':
+            new_cred = {
+                "info": {},
+                "secret": {},
+                "id": len(self.creds),
+                "last_edited": int(time.time())
+            }
+
+            if 'arg' in processed_input:
+                new_cred = {
+                    **new_cred, 
+                    **gen_random_cred()
+                }
+                
+            self.creds.append(new_cred)
+            app = RecordApp(self.creds[-1])
+            app.run()
+        elif processed_input['type'] == "save":
             self.save_data()  
         elif processed_input['type'] == "search":
             chosen_id = self.search_result(processed_input)

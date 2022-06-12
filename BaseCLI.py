@@ -27,7 +27,9 @@ class BaseCLI:
                 "pull": None
             },
             "save": None,
-            "add": None,
+            "new": {
+                "random": None
+            },
             "exit": None,
             "lock": None
         }
@@ -51,6 +53,8 @@ class BaseCLI:
             "copy": "Copy the property value",
             "edit": "Edit the record/property",
             "view": "View the record/property",
+            "new": "Add a new Record",
+            "random": "Add a new random record"
             
         }
         self.completer = CustomCompleter(self.creds, main_commands=self.main_commands, meta_dict=meta_help) 
@@ -68,13 +72,14 @@ class BaseCLI:
         tokens = text.split()
         if len(tokens) == 0:
             return
-        processed_input = {}
+        processed_input = {
+            "type": tokens[0]
+        }
         
-        if tokens[0]  == "save":
-            processed_input['type'] = "save"
-        elif tokens[0] in self.main_commands:
-            processed_input['type'] = tokens[0]
-            processed_input['arg'] = tokens[1:]
+        if tokens[0] in self.main_commands:
+            if len(tokens)>1:
+                processed_input['arg'] = tokens[1:]
+            
             # processed_input[tokens[0]] = tokens[1:]
         else:
             processed_input['type'] = 'search' 
@@ -90,7 +95,8 @@ class BaseCLI:
         def valiator(input_str):
             
             import re
-            pattern1 = r'^(?:((?:sync) (?:(?:push)|(?:pull)))|(?:add)|(?:save)|(?:exit)|(?:lock))$'
+            # Add automatic generation later
+            pattern1 = r'^(?:((?:sync) (?:(?:push)|(?:pull)))|(?:(?:new)(?: random)?)|(?:save)|(?:exit)|(?:lock))$'
             
             pattern2= r'^((?:(?:(?:[^ :]*):(?:[^ :]*) ?))+)(?:((?:copy)|(?:view)|(?:edit))|(\w*) ((?:copy)|(?:view)|(?:edit)))?$'
             z1 = re.match(pattern1, input_str)

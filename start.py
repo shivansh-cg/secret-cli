@@ -188,7 +188,7 @@ class App:
             return None
         # chosen_id = json.loads(chosen[0])['id']
         # return chosen_id
-        return search_results[int(chosen[0])]
+        return search_results[int(chosen[0])]['id']
     
     def process_input(self, processed_input):
 
@@ -203,6 +203,7 @@ class App:
             }
 
             if 'arg' in processed_input:
+
                 new_cred = {
                     **new_cred, 
                     **gen_random_cred()

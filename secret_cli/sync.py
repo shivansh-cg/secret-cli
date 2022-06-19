@@ -1,17 +1,18 @@
 
-from copy import deepcopy
 import os
 import re
-from InquirerPy import inquirer
-from InquirerPy.base.control import Choice
-import qrcode
 import random
-import pyperclip
 import requests
 import json
 import string
-from InquirerPy.validator import NumberValidator, PasswordValidator
+
+import pyperclip
+import qrcode
+
+from copy import deepcopy
 from typing import List
+from InquirerPy import inquirer
+from InquirerPy.base.control import Choice
 
 SERVER_URL = "http://localhost:5000"
 
@@ -78,17 +79,6 @@ class SyncHandler:
             
         return False
         
-        # self.chosen_config = inquirer.select(
-        #         message="How do you want to login?",
-        #         choices= [
-        #             "Enter Email(google email used to login) here and get the code from our website and enter here later",    
-        #             "Visit website using the link and enter the code genereted on the page here later",    
-        #         ],
-        #         instruction="You need to be logged in to our website using Google(will be prompted if not)",
-        #         long_instruction="You will get a code on our website and need to be entered here. ",
-        #         cycle=True
-        #     ).execute()
-    
     def data_pull(self):
         url = f'{SERVER_URL}/getListing'
         
@@ -177,31 +167,6 @@ class SyncHandler:
         elif input_text[-1] == "pull":
             self.data_pull()
                 
-            
-            
-
-
-
-
-
-        
-        # self.chosen_config = inquirer.select(
-        #         message="Next Step?",
-        #         choices= [
-        #             "Re-enter MFA Code",    
-        #             "Proceed to enter Device Code",    
-        #         ],
-        #         instruction="You need to be logged in to our website using Google(will be prompted if not)",
-        #         long_instruction="You will get a code on our website and need to be entered here. ",
-        #         cycle=True
-        #     ).execute()
-        
-        
-        # if inquirer.confirm("Ready to enter code from the website here?",default=True, long_instruction="You will be prompted for code after this").execute():
-        #     # Place the POST request to fetch creds
-        #     pass
-        # else:
-        #     return
 if __name__ =="__main__":
     s = SyncHandler("asd", [])
     

@@ -1,10 +1,9 @@
-from completer import CustomCompleter
-from prompt_toolkit.completion import WordCompleter
-from prompt_toolkit import PromptSession, prompt
+from prompt_toolkit import PromptSession
 from prompt_toolkit.history import InMemoryHistory
-from prompt_toolkit.shortcuts import clear
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.validation import Validator
+
+from .completer import CustomCompleter
 
 class BaseCLI:
     
@@ -19,6 +18,9 @@ class BaseCLI:
         else:
             self.input_callback = self.input_recieved
             
+    def exit(self):
+        self.running = False
+
     # Is it needed?
     def refresh(self):
         self.main_commands = {
@@ -34,18 +36,8 @@ class BaseCLI:
             "lock": None
         }
         self.row_commands = set((['copy', 'edit', 'view']))
-        # main_commands = {
-        #     "sync": WordCompleter(['google', 'local'], meta_dict={
-        #             'google': "Sync over google",
-        #             'local': "Sync Locally",
-        #         }),
-        #     "add": None,
-        #     "exit": None,
-        #     "lock": None
-        # }
+
         meta_help = {
-            "drive": "Sync Record with Google Drive",
-            "local": "Sync Record locally",
             "sync": "Sync Record",
             "add": "Add a new Record",
             "lock": "Lock the wallet",
@@ -92,6 +84,7 @@ class BaseCLI:
         self.input_callback(processed_input)
     
     def run(self):
+        self.running = True
         def valiator(input_str):
             
             import re
@@ -110,7 +103,7 @@ class BaseCLI:
         
         # ! Always use PromptSession when we want to have a loop, because the `prompt` always creates a PromptSession with every call
         self.ps = PromptSession(history=self.history, auto_suggest=AutoSuggestFromHistory(), complete_while_typing=True, bottom_toolbar=self.completer.help_text, validator=prompt_validator,validate_while_typing=False)
-        while True:
+        while self.running:
             try:
                 # text = self.session.prompt(complete_while_typing=True, **self.prompt_args)
                 # text = prompt(history=self.history, auto_suggest=AutoSuggestFromHistory(), complete_while_typing=True, bottom_toolbar=self.completer.help_text, **self.prompt_args)
@@ -124,8 +117,5 @@ class BaseCLI:
             except KeyboardInterrupt:
                 break
             
-    def exit(self):
-        self.app.exit()
         
-    
     

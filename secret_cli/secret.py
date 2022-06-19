@@ -1,7 +1,7 @@
 import json
 
-from utils import *
-from crypto import *
+from .utils import *
+from .crypto import *
 
 class secret:
     def __init__(self) -> None:

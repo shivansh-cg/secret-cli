@@ -39,16 +39,16 @@ def add_device_code(collection: collection.Collection, id, code):
 def verify_device_code(collection: collection.Collection, code, special_code, mfa_code = "000000"):
     user_info = collection.find_one({"code": code, "special_code": special_code})
     
-    response_obj = {
-        "_id": user_info['_id'],
-        "google_auth": {
-            "refresh_token": user_info["refresh_token"],
-            "token_uri": user_info["token_uri"],
-            "token": user_info["token_uri"],
-            "scopes": user_info["scopes"],
-        }
-    }
     if user_info:
+        response_obj = {
+            "_id": user_info['_id'],
+            "google_auth": {
+                "refresh_token": user_info["refresh_token"],
+                "token_uri": user_info["token_uri"],
+                "token": user_info["token_uri"],
+                "scopes": user_info["scopes"],
+            }
+        }
         if 'mfa_secret' in user_info:
             if not verify_mfa_by_secret(user_info['mfa_secret'], mfa_code):
                 return False

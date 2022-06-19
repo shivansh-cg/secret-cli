@@ -1,14 +1,14 @@
+import json
 
-from cmath import e
+from copy import deepcopy
 from prompt_toolkit.completion import Completer
 from prompt_toolkit.document import Document
 from prompt_toolkit.completion import WordCompleter, FuzzyCompleter#, NestedCompleter
-from nested_completer import NestedCompleter
 from prompt_toolkit import prompt
-import json
-from copy import deepcopy
-import re
-from utils import err_log
+
+from .nested_completer import NestedCompleter
+
+from .utils import err_log
 class CustomCompleter(Completer):
     """
         Custom completer for filling the completion
@@ -85,8 +85,8 @@ class CustomCompleter(Completer):
                     nextSecrets = next_word_dict[0]['secret'].keys()
                     commands = {
                         "copy": None,
-                        "edit": None,
-                        "view": None
+                        # "edit": None,
+                        # "view": None
                     }
                     nestedDict = dict(zip(nextSecrets, [commands for i in range(len(nextSecrets))]))
                     # ? whole record needed copying?

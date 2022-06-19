@@ -1,12 +1,7 @@
-
-import base64
 import json
 import os
-import threading
 from datetime import datetime
-from base64 import b64encode,b64decode
 from faker import Faker
-
 from prompt_toolkit import prompt
 from prompt_toolkit.filters import Condition
 from prompt_toolkit.key_binding import KeyBindings
@@ -14,10 +9,7 @@ from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.validation import Validator
 from prompt_toolkit.completion import PathCompleter
  
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from prompt_toolkit.formatted_text import HTML
-from cryptography.fernet import Fernet, InvalidToken
 
 f = Faker()
 random_emails = [f.email() for i in range(5)]
@@ -97,6 +89,7 @@ def gen_random_cred():
 def err_log(msg):
     with open("err.txt", "a") as f:
         f.write(f"[{str(datetime.today())}]: {msg}\n") 
+
 def cred_string(cred, hide_secret = True):
     # print(cred)
     if 'last_updated' not in cred:

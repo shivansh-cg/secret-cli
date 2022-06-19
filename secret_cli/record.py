@@ -15,8 +15,8 @@ from prompt_toolkit.validation import Validator, ValidationError
 from prompt_toolkit.styles import Style
 from prompt_toolkit.layout.menus import CompletionsMenu
 
-from utils import cred_string
-from nested_completer import NestedCompleter
+from .utils import cred_string
+from .nested_completer import NestedCompleter
 import pyperclip
 
 

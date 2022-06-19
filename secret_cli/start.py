@@ -1,33 +1,25 @@
+import os
+import time
 import json
 from typing import Dict
-from prompt_toolkit import PromptSession, prompt
-
-from prompt_toolkit.shortcuts import input_dialog
-
-from BaseCLI import BaseCLI
-from sync import SyncHandler
-from utils import cred_string, gen_random_cred, toggle_input
-
-from record import RecordApp
-from utils import toggle_input
-
 from threading import Thread
 from InquirerPy import inquirer
-from InquirerPy.base.control import Choice
 from InquirerPy.validator import PasswordValidator
-from prompt_toolkit import prompt
-from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.shortcuts import clear
-from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
-from prompt_toolkit.completion import NestedCompleter
-import os
-from crypto import crypto
+import pyperclip
 
-from exceptions import WrongPassLimit
-from listing import ListingApp
-import time
+
+from .crypto import crypto
+from .BaseCLI import BaseCLI
+from .sync import SyncHandler
+from .utils import cred_string, toggle_input
+from .record import RecordApp
+from .utils import toggle_input, gen_random_cred
+from .exceptions import WrongPassLimit
+from .listing import ListingApp
 
 SAMPLE_CONFIG = {"creds": [{'info': {'company': 'andSons', 'email': 'gregory06@evans.info', 'username': 'john76'}, 'secret': {'password': 'L$@0ZnCa3B'}, 'id': 0}, {'info': {'company': 'LLC', 'email': 'nelliott@barnes.com', 'username': 'lindseyneal'}, 'secret': {'password': '((h%7QNfK$'}, 'id': 1}], 'config':{"config_filename": ""}}
+
 
 class App:
     master_password = ""
@@ -78,11 +70,7 @@ class App:
             if not self.check_configs():
                 self.authenticate()
             
-            # with open("encrypted_data.json", "r") as file:
-            #     self.creds = (file.read())
-            # Authenticate and decrypt
         except Exception as e:
-            # Create a startup json file for proper functionality
             print(e)
             return
         self.auto_save_thread = Thread(target=self.auto_save, daemon=True)
@@ -92,7 +80,6 @@ class App:
         self.search_preprocessing()
         
         self.main_app = BaseCLI(self.creds, self.process_input)
-        # self.main_app = cliApp(creds#, self.input_rec)
         
         self.main_app.run()    
     
@@ -177,7 +164,14 @@ class App:
             if match_found:
                 search_results.append(self.creds[i])
                 # search_results.append((cred_string(self.creds[i]), ",".join([self.creds[i]['info'][k] for k in (self.creds[i]['info'])])))
-                
+            
+        if len(search_results) == 1:
+            if args[-1] == "copy":
+                pyperclip.copy(search_results[0]['secret'][args[-2]])
+                print("Secret Copied successfully")
+                return None
+            elif args[-1] == "edit" or args[-1] == "view":
+                return search_results[0]['id']
         # Check count and if there exists a sub command
         if len(search_results) == 0:
             print("No Results Found!")
@@ -194,6 +188,9 @@ class App:
 
         if processed_input['type'] == "sync":
             sh = SyncHandler(self, processed_input['arg'])
+        elif processed_input['type'] == 'exit':
+            self.main_app.exit()
+            return
         elif processed_input['type'] == 'new':
             new_cred = {
                 "info": {},
@@ -220,13 +217,11 @@ class App:
                 app = RecordApp(self.creds[chosen_id])
                 app.run()
         
-        
-
-if __name__ == "__main__":
-    try:  
+def main():
+    try: 
         app = App()
     except (WrongPassLimit):
         print("Max Limit reached for Wrong Passwords, Try Again")
 
-
-    
+if __name__ == "__main__":
+    exit(main())

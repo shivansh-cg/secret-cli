@@ -15,8 +15,8 @@ from prompt_toolkit.validation import Validator, ValidationError
 from prompt_toolkit.styles import Style
 from prompt_toolkit.layout.menus import CompletionsMenu
 
-from utils import cred_string
-from nested_completer import NestedCompleter
+from .utils import cred_string
+from .nested_completer import NestedCompleter
 import pyperclip
 
 
@@ -109,6 +109,22 @@ class RecordHandler:
         print(cred_string(self.record))
 
 class RecordApp:
+    kb = KeyBindings()
+
+    @kb.add("c-c", eager=True)
+    @kb.add("escape", eager=True)
+    @kb.add("c-q", eager=True)
+    def _(event):
+        """
+        Pressing Ctrl-Q or Ctrl-C will exit the user interface.
+
+        Setting a return value means: quit the event loop that drives the user
+        interface and return this value from the `Application.run()` call.
+
+        Note that Ctrl-Q does not work on all terminals. Sometimes it requires
+        executing `stty -ixon`.
+        """
+        event.app.exit()
     
     
     def callback(self, data):
@@ -232,7 +248,7 @@ class RecordApp:
         def get_titlebar_text():
             return [
                 ("class:title", " Record "),
-                ("class:title", " (Press [Ctrl-Q/ Ctrl-C] to quit.) (Press [Ctrl-T] to toggle secret visibility.)"),
+                ("class:title", " (Press [Ctrl-Q/ Ctrl-C] to quit.)"),
             ]
         
         self.root_container = HSplit(
@@ -251,37 +267,13 @@ class RecordApp:
         )
     
     
-    def update_ui(self, add_log=True) -> None:
-        self.right_buffer.text = cred_string(self.record_handler.record, self.hide_secret)
-        if add_log:
-            self.log_buffer.text = f'{self.record_handler.last_action}\n{self.log_buffer.text}'
+    def update_ui(self) -> None:
+        self.right_buffer.text = cred_string(self.record_handler.record)
+        self.log_buffer.text = f'{self.record_handler.last_action}\n{self.log_buffer.text}'
         
     
     def __init__(self, record) -> None:
-        kb = KeyBindings()
-
-        @kb.add("c-c", eager=True)
-        @kb.add("escape", eager=True)
-        @kb.add("c-q", eager=True)
-        def _(event):
-            """
-            Pressing Ctrl-Q or Ctrl-C will exit the user interface.
-
-            Setting a return value means: quit the event loop that drives the user
-            interface and return this value from the `Application.run()` call.
-
-            Note that Ctrl-Q does not work on all terminals. Sometimes it requires
-            executing `stty -ixon`.
-            """
-            event.app.exit()
-        
-        @kb.add("c-t", eager=True)
-        def _ctrl_t(event):
-            self.hide_secret ^= 1
-            self.update_ui(False)
-
         # self.record = record
-        self.hide_secret = True
         self.invalid_input = False
         self.record_handler = RecordHandler(record)
         self.title = "Hello Hi Question??/"
@@ -289,7 +281,7 @@ class RecordApp:
         self.right_buffer.text = cred_string(self.record_handler.record)
         self.app = Application(
             layout=Layout(self.root_container, focused_element=self.left_window),
-            key_bindings=kb,
+            key_bindings=self.kb,
             # Let's add mouse support!
             mouse_support=True,
             # Using an alternate screen buffer means as much as: "run full screen".

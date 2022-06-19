@@ -1,9 +1,10 @@
 import base64
 import json
 import os
-from threading import Thread
 import time
 import cryptography
+
+from threading import Thread
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.fernet import Fernet, InvalidToken

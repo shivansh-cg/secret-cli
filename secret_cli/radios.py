@@ -1,41 +1,22 @@
-import utils
-from prompt_toolkit.application import Application
-from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.key_binding import KeyBindings
-from prompt_toolkit.layout.containers import HSplit, VSplit, Window, WindowAlign
-from prompt_toolkit.layout.controls import BufferControl, FormattedTextControl
-from prompt_toolkit.layout.layout import Layout
+from prompt_toolkit.layout.containers import Window
+from prompt_toolkit.layout.controls import FormattedTextControl
 
 from prompt_toolkit.layout.margins import (
     ConditionalMargin,
-    NumberedMargin,
     ScrollbarMargin,
 )
 from prompt_toolkit.filters import (
     Condition,
 )
 from prompt_toolkit.widgets import (
-    Box,
-    Button,
-    Checkbox,
-    Dialog,
-    Frame,
-    Label,
-    MenuContainer,
-    MenuItem,
-    ProgressBar,
     RadioList,
-    TextArea,
 )
 
 from prompt_toolkit.formatted_text import (
     to_formatted_text
 )
-from prompt_toolkit.styles import Style
-# password = utils.toggle_input("Master Password")
-# print(password)
 
-# aal = 1
 class MyRadio(RadioList):
     open_character = ""
     close_character = ""

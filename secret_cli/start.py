@@ -165,12 +165,13 @@ class App:
                 search_results.append(self.creds[i])
                 # search_results.append((cred_string(self.creds[i]), ",".join([self.creds[i]['info'][k] for k in (self.creds[i]['info'])])))
             
-        if len(search_results) == 1 and args[-1] == "copy":
-            # print(search_results[0]['secret'])
-            # print(args[-1])
-            pyperclip.copy(search_results[0]['secret'][args[-2]])
-            print("Secret Copied successfully")
-            return None
+        if len(search_results) == 1:
+            if args[-1] == "copy":
+                pyperclip.copy(search_results[0]['secret'][args[-2]])
+                print("Secret Copied successfully")
+                return None
+            elif args[-1] == "edit" or args[-1] == "view":
+                return search_results[0]['id']
         # Check count and if there exists a sub command
         if len(search_results) == 0:
             print("No Results Found!")

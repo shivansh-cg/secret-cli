@@ -13,7 +13,6 @@ from copy import deepcopy
 from typing import List
 from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
-from InquirerPy.validator import NumberValidator, PasswordValidator
 
 SERVER_URL = "http://localhost:5000"
 

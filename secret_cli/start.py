@@ -4,18 +4,11 @@ import json
 from typing import Dict
 from threading import Thread
 from InquirerPy import inquirer
-from InquirerPy.base.control import Choice
 from InquirerPy.validator import PasswordValidator
-from prompt_toolkit import PromptSession, prompt
-from prompt_toolkit.shortcuts import input_dialog
-from prompt_toolkit import prompt
-from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.shortcuts import clear
-from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
-from prompt_toolkit.completion import NestedCompleter
+
+
 from .crypto import crypto
-
-
 from .BaseCLI import BaseCLI
 from .sync import SyncHandler
 from .utils import cred_string, toggle_input

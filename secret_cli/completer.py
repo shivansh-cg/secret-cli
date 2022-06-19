@@ -1,4 +1,3 @@
-import re
 import json
 
 from copy import deepcopy

@@ -1,7 +1,5 @@
-from prompt_toolkit.completion import WordCompleter
-from prompt_toolkit import PromptSession, prompt
+from prompt_toolkit import PromptSession
 from prompt_toolkit.history import InMemoryHistory
-from prompt_toolkit.shortcuts import clear
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.validation import Validator
 

@@ -1,10 +1,6 @@
-
-import base64
 import json
 import os
-import threading
 from datetime import datetime
-from base64 import b64encode,b64decode
 
 from prompt_toolkit import prompt
 from prompt_toolkit.filters import Condition
@@ -13,10 +9,7 @@ from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.validation import Validator
 from prompt_toolkit.completion import PathCompleter
  
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from prompt_toolkit.formatted_text import HTML
-from cryptography.fernet import Fernet, InvalidToken
 
 def toggle_input(prompt_text=">", initially_hidden=True):
     """Input Prompt which has a toggle to show input characters or not

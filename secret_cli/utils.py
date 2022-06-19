@@ -1,7 +1,7 @@
 import json
 import os
 from datetime import datetime
-
+from faker import Faker
 from prompt_toolkit import prompt
 from prompt_toolkit.filters import Condition
 from prompt_toolkit.key_binding import KeyBindings
@@ -10,6 +10,11 @@ from prompt_toolkit.validation import Validator
 from prompt_toolkit.completion import PathCompleter
  
 from prompt_toolkit.formatted_text import HTML
+
+f = Faker()
+random_emails = [f.email() for i in range(5)]
+random_usernames = [f.user_name() for i in range(10)]
+random_info = ["myinfo1", "myinfo2"]
 
 def toggle_input(prompt_text=">", initially_hidden=True):
     """Input Prompt which has a toggle to show input characters or not
@@ -69,8 +74,23 @@ def get_path_prompt(prompt_text, **kwargs):
 #         else:
 #             ret_string += ('\t' * (indent+1) + str(value) + "\n")
 #     return ret_string
+def gen_random_cred():
+    return {
+        "info": {
+            "company": f.company().replace(' ', ''),
+            "email": f.random_element(random_emails),
+            "username": f.random_element(random_usernames),
+            "random_info": f.random_element(random_info)
+        },
+        "secret": {
+            "password": f.password()
+        }
+    }
+def err_log(msg):
+    with open("err.txt", "a") as f:
+        f.write(f"[{str(datetime.today())}]: {msg}\n") 
 
-def cred_string(cred):
+def cred_string(cred, hide_secret = True):
     # print(cred)
     if 'last_updated' not in cred:
         cred['last_updated'] = int(datetime.now().timestamp())
@@ -81,11 +101,17 @@ def cred_string(cred):
     cred_ret = {
         'info':cred['info'],
         # 'info':{}, # ! REMOVE IF WORKS
-        'secret': cred['secret'],
+        # 'secret': cred['secret'],
+        # 'versioning': cred['versioning'],
+        'last_updated': str(datetime.fromtimestamp(cred['last_updated']).strftime('%d %b %Y %H:%M:%S')),
         'id': cred['id'],
-        'versioning': cred['versioning'],
-        'last_updated': str(datetime.fromtimestamp(cred['last_updated']).strftime('%d %b %Y %H:%M:%S'))
     }
+    if hide_secret:
+        cred_ret['secret'] = { c: "*"*12 for c in cred['secret'] }
+    else:
+        cred_ret['secret'] = cred['secret']
+
+    # print(cred_ret)
     # for key in cred['info']: # ! REMOVE IF WORKS
     #     cred_ret["info"][cred['info'][key]] = key
 # ! TODO later solve the \"  problem in printing using dumps

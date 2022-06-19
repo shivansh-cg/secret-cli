@@ -18,6 +18,9 @@ class BaseCLI:
         else:
             self.input_callback = self.input_recieved
             
+    def exit(self):
+        self.running = False
+
     # Is it needed?
     def refresh(self):
         self.main_commands = {
@@ -26,14 +29,15 @@ class BaseCLI:
                 "pull": None
             },
             "save": None,
-            "add": None,
+            "new": {
+                "random": None
+            },
             "exit": None,
             "lock": None
         }
         self.row_commands = set((['copy', 'edit', 'view']))
+
         meta_help = {
-            "drive": "Sync Record with Google Drive",
-            "local": "Sync Record locally",
             "sync": "Sync Record",
             "add": "Add a new Record",
             "lock": "Lock the wallet",
@@ -41,6 +45,8 @@ class BaseCLI:
             "copy": "Copy the property value",
             "edit": "Edit the record/property",
             "view": "View the record/property",
+            "new": "Add a new Record",
+            "random": "Add a new random record"
             
         }
         self.completer = CustomCompleter(self.creds, main_commands=self.main_commands, meta_dict=meta_help) 
@@ -58,13 +64,14 @@ class BaseCLI:
         tokens = text.split()
         if len(tokens) == 0:
             return
-        processed_input = {}
+        processed_input = {
+            "type": tokens[0]
+        }
         
-        if tokens[0]  == "save":
-            processed_input['type'] = "save"
-        elif tokens[0] in self.main_commands:
-            processed_input['type'] = tokens[0]
-            processed_input['arg'] = tokens[1:]
+        if tokens[0] in self.main_commands:
+            if len(tokens)>1:
+                processed_input['arg'] = tokens[1:]
+            
             # processed_input[tokens[0]] = tokens[1:]
         else:
             processed_input['type'] = 'search' 
@@ -77,10 +84,12 @@ class BaseCLI:
         self.input_callback(processed_input)
     
     def run(self):
+        self.running = True
         def valiator(input_str):
             
             import re
-            pattern1 = r'^(?:((?:sync) (?:(?:push)|(?:pull)))|(?:add)|(?:save)|(?:exit)|(?:lock))$'
+            # Add automatic generation later
+            pattern1 = r'^(?:((?:sync) (?:(?:push)|(?:pull)))|(?:(?:new)(?: random)?)|(?:save)|(?:exit)|(?:lock))$'
             
             pattern2= r'^((?:(?:(?:[^ :]*):(?:[^ :]*) ?))+)(?:((?:copy)|(?:view)|(?:edit))|(\w*) ((?:copy)|(?:view)|(?:edit)))?$'
             z1 = re.match(pattern1, input_str)
@@ -94,17 +103,19 @@ class BaseCLI:
         
         # ! Always use PromptSession when we want to have a loop, because the `prompt` always creates a PromptSession with every call
         self.ps = PromptSession(history=self.history, auto_suggest=AutoSuggestFromHistory(), complete_while_typing=True, bottom_toolbar=self.completer.help_text, validator=prompt_validator,validate_while_typing=False)
-        while True:
+        while self.running:
             try:
+                # text = self.session.prompt(complete_while_typing=True, **self.prompt_args)
+                # text = prompt(history=self.history, auto_suggest=AutoSuggestFromHistory(), complete_while_typing=True, bottom_toolbar=self.completer.help_text, **self.prompt_args)
                 text = self.ps.prompt(**self.prompt_args)
+                # text = self.ps.prompt(complete_while_typing=True, bottom_toolbar=self.completer.help_text, **self.prompt_args)
+                # Reset the toolbar
                 self.completer.current_text = ""
+                # self.input_callback(text)
                 self.process_input(text)
                 
             except KeyboardInterrupt:
                 break
             
-    def exit(self):
-        self.app.exit()
         
-    
     

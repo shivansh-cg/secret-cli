@@ -6,6 +6,7 @@ from threading import Thread
 from InquirerPy import inquirer
 from InquirerPy.validator import PasswordValidator
 from prompt_toolkit.shortcuts import clear
+import pyperclip
 
 
 from .crypto import crypto
@@ -13,11 +14,12 @@ from .BaseCLI import BaseCLI
 from .sync import SyncHandler
 from .utils import cred_string, toggle_input
 from .record import RecordApp
-from .utils import toggle_input
+from .utils import toggle_input, gen_random_cred
 from .exceptions import WrongPassLimit
 from .listing import ListingApp
 
 SAMPLE_CONFIG = {"creds": [{'info': {'company': 'andSons', 'email': 'gregory06@evans.info', 'username': 'john76'}, 'secret': {'password': 'L$@0ZnCa3B'}, 'id': 0}, {'info': {'company': 'LLC', 'email': 'nelliott@barnes.com', 'username': 'lindseyneal'}, 'secret': {'password': '((h%7QNfK$'}, 'id': 1}], 'config':{"config_filename": ""}}
+
 
 class App:
     master_password = ""
@@ -160,8 +162,15 @@ class App:
                 if r not in search:
                     match_found = False
             if match_found:
-                search_results.append((cred_string(self.creds[i]), ",".join([self.creds[i]['info'][k] for k in (self.creds[i]['info'])])))
-                
+                search_results.append(self.creds[i])
+                # search_results.append((cred_string(self.creds[i]), ",".join([self.creds[i]['info'][k] for k in (self.creds[i]['info'])])))
+            
+        if len(search_results) == 1 and args[-1] == "copy":
+            # print(search_results[0]['secret'])
+            # print(args[-1])
+            pyperclip.copy(search_results[0]['secret'][args[-2]])
+            print("Secret Copied successfully")
+            return None
         # Check count and if there exists a sub command
         if len(search_results) == 0:
             print("No Results Found!")
@@ -170,13 +179,36 @@ class App:
         chosen = app.run()
         if chosen == None:
             return None
-        chosen_id = json.loads(chosen[0])['id']
-        return chosen_id
+        # chosen_id = json.loads(chosen[0])['id']
+        # return chosen_id
+        return search_results[int(chosen[0])]['id']
     
     def process_input(self, processed_input):
+
         if processed_input['type'] == "sync":
             sh = SyncHandler(self, processed_input['arg'])
-        if processed_input['type'] == "save":
+        elif processed_input['type'] == 'exit':
+            self.main_app.exit()
+            return
+        elif processed_input['type'] == 'new':
+            new_cred = {
+                "info": {},
+                "secret": {},
+                "id": len(self.creds),
+                "last_edited": int(time.time())
+            }
+
+            if 'arg' in processed_input:
+
+                new_cred = {
+                    **new_cred, 
+                    **gen_random_cred()
+                }
+                
+            self.creds.append(new_cred)
+            app = RecordApp(self.creds[-1])
+            app.run()
+        elif processed_input['type'] == "save":
             self.save_data()  
         elif processed_input['type'] == "search":
             chosen_id = self.search_result(processed_input)
@@ -184,7 +216,6 @@ class App:
                 app = RecordApp(self.creds[chosen_id])
                 app.run()
         
-
 def main():
     try: 
         app = App()

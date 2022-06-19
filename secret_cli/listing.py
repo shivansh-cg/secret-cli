@@ -8,33 +8,18 @@ from prompt_toolkit.widgets import Frame
 from prompt_toolkit.styles import Style
 
 from .radios import MyRadio
-
+from . import utils
 
 class ListingApp:
-    kb = KeyBindings()
 
-
-    @kb.add("c-c", eager=True)
-    @kb.add("c-q", eager=True)
-    @kb.add("escape", eager=True)
-    def _(event):
-        """
-        Pressing Ctrl-Q or Ctrl-C will exit the user interface.
-
-        Setting a return value means: quit the event loop that drives the user
-        interface and return this value from the `Application.run()` call.
-
-        Note that Ctrl-Q does not work on all terminals. Sometimes it requires
-        executing `stty -ixon`.
-        """
-        event.app.exit()
-    
-    def callback(self, data):
-        self.right_buffer.text = data 
+    def callback(self, id):
+        self.id = id
+        self.right_buffer.text = utils.cred_string(self.values[int(id)], self.hide_secret) 
         
-    def layout(self, values):   
+    def layout(self):   
         self.right_buffer = Buffer()
-        
+        values = ([(str(index), ",".join([v for v in val['info'].values()])) for index, val in enumerate(self.values)])
+         
         self.radios = MyRadio(
             values=values,
             callback=self.callback
@@ -68,7 +53,7 @@ class ListingApp:
         def get_titlebar_text():
             return [
                 ("class:title", " Search Results "),
-                ("class:title", " (Press [Ctrl-Q/Ctrl-C] to quit.)"),
+                ("class:title", " (Press [Ctrl-Q/ Ctrl-C] to quit.) (Press [Ctrl-T] to toggle secret visibility.)"),
             ]
 
         
@@ -88,10 +73,36 @@ class ListingApp:
         )
     
     def __init__(self, values) -> None:
-        self.layout(values)
+        kb = KeyBindings()
+
+
+        @kb.add("c-c", eager=True)
+        @kb.add("c-q", eager=True)
+        @kb.add("escape", eager=True)
+        def _(event):
+            """
+            Pressing Ctrl-Q or Ctrl-C will exit the user interface.
+
+            Setting a return value means: quit the event loop that drives the user
+            interface and return this value from the `Application.run()` call.
+
+            Note that Ctrl-Q does not work on all terminals. Sometimes it requires
+            executing `stty -ixon`.
+            """
+            event.app.exit()
+
+        @kb.add("c-t", eager=True)
+        def _ctrl_t(event):
+            self.hide_secret ^= 1
+            self.right_buffer.text = utils.cred_string(self.values[int(self.id)], self.hide_secret) 
+
+        
+        self.values = values
+        self.hide_secret = True
+        self.layout()
         self.app = Application(
             layout=Layout(self.root_container, focused_element=self.left_window),
-            key_bindings=self.kb,
+            key_bindings=kb,
             # Let's add mouse support!
             mouse_support=True,
             # Using an alternate screen buffer means as much as: "run full screen".
@@ -106,7 +117,7 @@ class ListingApp:
 
         """
         return self.app.run()
-    
+        
 if __name__ =="__main__":
     import json
     

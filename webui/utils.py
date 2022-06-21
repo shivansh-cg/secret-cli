@@ -2,6 +2,7 @@ from time import time
 from pymongo import collection
 import pyotp
 import qrcode
+import hashlib
 import qrcode.image.svg
 import googleapiclient
 factory = qrcode.image.svg.SvgPathImage
@@ -24,8 +25,9 @@ def verify_mfa_by_secret(mfa_secret,code):
 def getUserInfo(credentials):
     oauth2_client = googleapiclient.discovery.build('oauth2','v2',credentials=credentials)
     user_info = oauth2_client.userinfo().get().execute()
+    hashed_id = hashlib.sha256((str(user_info['id']).encode('utf-8'))).hexdigest()
     return {
-        "_id": str(hash(user_info['id'])),
+        "_id": hashed_id,
         'email': user_info['email']
     }
     
@@ -64,6 +66,8 @@ def verify_device_code(collection: collection.Collection, code, special_code, mf
             
 def mfa_exists(collection, id):
     user = collection.find_one({"_id": id})
+    if not user:
+        return False
     if 'mfa_secret' not in user:
         return False
     return True

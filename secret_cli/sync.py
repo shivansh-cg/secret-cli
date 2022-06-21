@@ -15,6 +15,7 @@ from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
 
 SERVER_URL = "http://localhost:5000"
+SERVER_URL = "https://secret-cli.herokuapp.com"
 
 class SyncHandler:
     
@@ -85,7 +86,11 @@ class SyncHandler:
         req = requests.post(url, json={
             "config": self.app.config # Google auth, _id etc
         })
-        
+        if(req.status_code != 200):
+            print(req.text)
+            print("Unable to Connect to Server")
+            return None
+        print(req.text)
         req_data = json.loads(req.text)
         chosen = inquirer.select(
             "You have following config available in drive, Please choose one to pull",

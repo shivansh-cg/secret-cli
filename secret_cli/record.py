@@ -89,7 +89,10 @@ class RecordHandler:
 
 
     def delete_prop(self, type:str, key:str):
-        self.record[type].pop(key)
+        try:
+            self.record[type].pop(key)
+        except KeyError: 
+            self.last_action = "Invalid {} key given".format(type)
         self.record['versioning'].append(str(hash(json.dumps(self.record))))
         
         

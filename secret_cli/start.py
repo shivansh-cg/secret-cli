@@ -97,6 +97,9 @@ class App:
             os.mkdir(self.config_folder)
         available_configs = os.listdir(self.config_folder)
         if len(available_configs) == 0:
+            print("No Configuration found!!")
+            print("Generating New Configuration")
+            print("Please Follow steps")
             # Create a new Password
             new_password = inquirer.secret(
                 message="New password:",
@@ -220,6 +223,9 @@ class App:
 def main():
     try: 
         app = App()
+    except (KeyboardInterrupt):
+        print("Exiting")
+        exit(0)
     except (WrongPassLimit):
         print("Max Limit reached for Wrong Passwords, Try Again")
 

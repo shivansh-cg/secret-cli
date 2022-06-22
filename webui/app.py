@@ -23,7 +23,7 @@ from googleapiclient.http import MediaIoBaseDownload
 import drive_backend
 from pymongo import MongoClient
 
-from utils import add_device_code, mfa_exists, upsert_mongo, getUserInfo, verify_device_code, generate_mfa, verify_mfa
+from utils import add_device_code, mfa_exists, template_var_init, upsert_mongo, getUserInfo, verify_device_code, generate_mfa, verify_mfa
 
 # This variable specifies the name of a file that contains the OAuth 2.0
 # information for this application, including its client_id and client_secret.
@@ -234,7 +234,7 @@ def add_device2(special_code):
         credentials['mfa_secret'] = profiles.find_one({"_id": credentials['_id']}).get("mfa_secret", None)
         
         if credentials['mfa_secret'] == None:
-            return flask.redirect(flask.url_for('MFA_register'))
+            return flask.redirect(flask.url_for('mfa_register'))
         
         print(credentials)
         device_codes.replace_one({"_id": credentials['_id']}, credentials, upsert=True)
@@ -267,6 +267,7 @@ def authorize():
     authorization_url, state = flow.authorization_url(
         # Enable offline access so that you can refresh an access token without
         # re-prompting the user for permission. Recommended for web server apps.
+        prompt='consent',
         access_type='offline',
         # Enable incremental authorization. Recommended as a best practice.
         include_granted_scopes='true')
@@ -277,17 +278,21 @@ def authorize():
     # print(authorization_url)
     return flask.redirect(authorization_url)
 
-@app.route('/MFA_register', methods=['GET'])
+@app.route('/mfa_register', methods=['GET'])
 def mfa_register():
     if 'credentials' not in flask.session:
         return flask.redirect('authorize')
+    template_vars = {
+        "logged_in": True
+    }
     credentials = flask.session['credentials']
     
     if not mfa_exists(profiles, credentials['_id']) or request.args.get('force') == "true":
         qr_code, secret = generate_mfa()
         profiles.update_one({"_id": credentials['_id']}, {'$set': {'mfa_secret': secret}})
-        return render_template('mfa_register.html', qr_code=Markup(qr_code), force=True)
-    return render_template('mfa_exists.html')
+        template_vars['qr_code'] = Markup(qr_code)
+        return render_template('mfa_register.html', **template_vars)
+    return render_template('mfa_exists.html', **template_vars)
     
 @app.route('/MFA_verify', methods=['GET'])
 def mfa_verify():
@@ -298,7 +303,7 @@ def mfa_verify():
         if '_id' not in credentials:
             return {"msg": "Invalid Request"}
     if not mfa_exists(profiles, credentials['_id']):
-        return flask.redirect(flask.url_for('MFA_register', _external=True))    
+        return flask.redirect(flask.url_for('mfa_register', _external=True))    
     the_code = (credentials['code'])
     
     return {"verification": verify_mfa(profiles, credentials['_id'], the_code)}
@@ -330,27 +335,40 @@ def oauth2callback():
     
     
     flask.session['credentials'] = client_cred_dict(credentials_to_dict(credentials), user_info['_id'])
-    return flask.redirect(flask.url_for('test_api_request'))
+    return flask.redirect(flask.url_for('home'))
 
 
-@app.route('/revoke')
-def revoke():
+# @app.route('/revoke')
+# def revoke():
+#     if 'credentials' not in flask.session:
+#         return ('You need to <a href="/authorize">authorize</a> before ' +
+#                 'testing the code to revoke credentials.')
+
+#     credentials = google.oauth2.credentials.Credentials(
+#         **build_credentials(flask.session['credentials']))
+
+#     revoke = requests.post('https://oauth2.googleapis.com/revoke',
+#                            params={'token': credentials.token},
+#                            headers={'content-type': 'application/x-www-form-urlencoded'})
+
+#     status_code = getattr(revoke, 'status_code')
+#     if status_code == 200:
+#         return('Credentials successfully revoked.')
+#     else:
+#         return('An error occurred.')
+
+@app.route('/home')
+def home():
+    template_vars = {}
     if 'credentials' not in flask.session:
-        return ('You need to <a href="/authorize">authorize</a> before ' +
-                'testing the code to revoke credentials.')
-
-    credentials = google.oauth2.credentials.Credentials(
-        **build_credentials(flask.session['credentials']))
-
-    revoke = requests.post('https://oauth2.googleapis.com/revoke',
-                           params={'token': credentials.token},
-                           headers={'content-type': 'application/x-www-form-urlencoded'})
-
-    status_code = getattr(revoke, 'status_code')
-    if status_code == 200:
-        return('Credentials successfully revoked.')
+        template_vars['logged_in'] = False
     else:
-        return('An error occurred.')
+        template_vars['logged_in'] = True
+        if not mfa_exists(profiles, flask.session['credentials']['_id']):
+            template_vars['mfa_not_created'] = True
+             
+
+    return render_template('home.html', **template_vars)
 
 @app.route('/clear')
 def clear_credentials():

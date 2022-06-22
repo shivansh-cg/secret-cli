@@ -238,6 +238,7 @@ def add_device2(special_code):
         
         print(credentials)
         device_codes.replace_one({"_id": credentials['_id']}, credentials, upsert=True)
+        return render_template('device_connect.html', otp=code, logged_in=True)
         return {"msg": code}
     
     

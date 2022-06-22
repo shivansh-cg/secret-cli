@@ -23,7 +23,7 @@ from googleapiclient.http import MediaIoBaseDownload
 import drive_backend
 from pymongo import MongoClient
 
-from utils import add_device_code, mfa_exists, template_var_init, upsert_mongo, getUserInfo, verify_device_code, generate_mfa, verify_mfa
+from utils import add_device_code, mfa_exists, upsert_mongo, getUserInfo, verify_device_code, generate_mfa, verify_mfa
 
 # This variable specifies the name of a file that contains the OAuth 2.0
 # information for this application, including its client_id and client_secret.
@@ -267,8 +267,8 @@ def authorize():
     authorization_url, state = flow.authorization_url(
         # Enable offline access so that you can refresh an access token without
         # re-prompting the user for permission. Recommended for web server apps.
-        prompt='consent',
         access_type='offline',
+        prompt='consent',
         # Enable incremental authorization. Recommended as a best practice.
         include_granted_scopes='true')
 
@@ -294,7 +294,7 @@ def mfa_register():
         return render_template('mfa_register.html', **template_vars)
     return render_template('mfa_exists.html', **template_vars)
     
-@app.route('/MFA_verify', methods=['GET'])
+@app.route('/mfa_verify', methods=['GET'])
 def mfa_verify():
     if 'credentials' in flask.session:
         credentials = flask.session['credentials']
@@ -357,6 +357,12 @@ def oauth2callback():
 #     else:
 #         return('An error occurred.')
 
+@app.route('/clear')
+def clear_credentials():
+    if 'credentials' in flask.session:
+        del flask.session['credentials']
+    return flask.redirect(flask.url_for('home'))
+
 @app.route('/home')
 def home():
     template_vars = {}
@@ -369,12 +375,6 @@ def home():
              
 
     return render_template('home.html', **template_vars)
-
-@app.route('/clear')
-def clear_credentials():
-    if 'credentials' in flask.session:
-        del flask.session['credentials']
-    return ('Credentials have been cleared.<br><br>')
 
 
 

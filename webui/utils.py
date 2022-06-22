@@ -7,17 +7,6 @@ import qrcode.image.svg
 import googleapiclient
 factory = qrcode.image.svg.SvgPathImage
 
-def template_var_init(flask):
-
-    template_vars = {
-        "mfa_not_created": True
-    }
-    if 'credentials' in flask.session:
-        template_vars['logged_in'] = True
-    else:
-        template_vars['logged_in'] = False
-    
-    return template_vars
 
 def generate_mfa(secret = pyotp.random_base32()):
     totp = pyotp.TOTP(secret)
